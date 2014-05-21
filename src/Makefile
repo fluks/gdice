@@ -1,21 +1,21 @@
-BIN = gtk_dice
-CC = gcc
+bin = gdice
 # Append flags(possibly overriding existing ones) with make CFLAGS=<flags> ...
-override CFLAGS := `pkg-config --cflags gtk+-2.0` -g3 -O2 -pedantic -Wall -Werror -std=c99 $(CFLAGS)
-LDLIBS = `pkg-config --libs gtk+-2.0` -lportaudio
-OBJECTS = main.o gui.o sound.o 
-CTAGS_OUTPUT = tags
+override CFLAGS := $(shell pkg-config --cflags gtk+-3.0 glib-2.0) -g -O2 -pedantic -Wall -std=c99 $(CFLAGS)
+LDLIBS = $(shell pkg-config --libs gtk+-3.0 glib-2.0)
+sources = $(wildcard *.c)
+objects = $(sources:.c=.o)
 
 .PHONY: all ctags clean
 
-all: $(OBJECTS)
-	$(CC) $(CFLAGS) $(LDLIBS) $(OBJECTS) -o $(BIN)
+all: $(objects)
+	$(CC) $(CFLAGS) $< -o ../$(bin) $(LDLIBS)
 
 %.o: %.c
-	$(CC) $(CFLAGS) $(LDLIBS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $< $(LDLIBS)
 
 ctags:
-	ctags -R -o $(CTAGS_OUTPUT) --c++-kinds=+p --fields=+iaS --extra=+q /usr/include/portaudio.h /usr/include/gtk-2.0/ /usr/lib/gtk-2.0/include/ /usr/include/glib-2.0/ /usr/lib/glib-2.0/include/ .
+	ctags -o ../tags -R --c++-kinds=+p --fields=+iaS --extra=+q \
+	$(filter-out -p%, $(subst -I,, $(shell pkg-config --cflags gtk+-3.0 glib-2.0))) .
 
 clean:
-	@rm -f $(OBJECTS) $(CTAGS_OUTPUT) 
+	@rm -f $(objects)
