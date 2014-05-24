@@ -44,6 +44,13 @@ add_modifier(gint modifier, gint64 *result, GString *result_string);
 static void
 add_dice_expression(const gchar *expr, gint64 *result, GString *result_string);
 
+static gboolean
+validate_dice_expr(GtkWidget *entry, GdkEvent *event, gpointer builder);
+
+static void
+set_ui_based_on_dice_expression_validity(GtkWidget *roll_button, GtkWidget *dice_expr,
+    gboolean valid_dice_expression);
+
 int
 main(int argc, char **argv) {
     // For de_parse().
@@ -55,6 +62,9 @@ main(int argc, char **argv) {
     gtk_builder_add_from_file(builder, "res/gdice.glade", NULL);
 
     gtk_builder_connect_signals(builder, NULL);
+
+    GObject *dice_expr = gtk_builder_get_object(builder, "dice_expression");
+    g_signal_connect(dice_expr, "key-release-event", G_CALLBACK(validate_dice_expr), builder);
 
     GObject *roll_button = gtk_builder_get_object(builder, "roll_button");
     g_signal_connect(roll_button, "clicked", G_CALLBACK(roll), builder);
@@ -317,4 +327,56 @@ add_dice_expression(const gchar *expr, gint64 *result, GString *result_string) {
         prefix = "+";
     g_string_append_printf(result_string, "%s%s", prefix, rolled_expr);
     free(rolled_expr);
+}
+
+/** Validate dice expression.
+ * If dice expression is invalid show it to the user and disable roll button.
+ * @param entry Dice expression entry.
+ * @param event
+ * @param user_data GtkBuilder.
+ * @return
+ */
+static gboolean
+validate_dice_expr(GtkWidget *entry, GdkEvent *event, gpointer user_data) {
+    GtkBuilder *builder = user_data;
+    int_least64_t result = 0;
+    char *rolled_expr = NULL;
+
+    GObject *roll_button = gtk_builder_get_object(builder, "roll_button");
+    const gchar *expr = gtk_entry_get_text(GTK_ENTRY(entry));
+    if (g_strcmp0(expr, "") == 0) {
+        set_ui_based_on_dice_expression_validity(GTK_WIDGET(roll_button), entry, TRUE);
+        return FALSE;
+    }
+
+    enum parse_error error = de_parse(expr, &result, &rolled_expr);
+    switch (error) {
+        // Fallthrough!
+        case DE_INVALID_CHARACTER: case DE_SYNTAX_ERROR: case DE_NROLLS:
+        case DE_IGNORE: case DE_DICE:
+            set_ui_based_on_dice_expression_validity(GTK_WIDGET(roll_button), entry, FALSE);
+            break;
+        default:
+            set_ui_based_on_dice_expression_validity(GTK_WIDGET(roll_button), entry, TRUE);
+    }
+    free(rolled_expr);
+
+    return FALSE;
+}
+
+/** Change widgets to reflect validity of dice expression.
+ * @param roll_button
+ * @param dice_expr
+ * @param valid_dice_expression
+ */
+static void
+set_ui_based_on_dice_expression_validity(GtkWidget *roll_button, GtkWidget *dice_expr,
+    gboolean valid_dice_expression) {
+    gtk_widget_set_sensitive(GTK_WIDGET(roll_button), valid_dice_expression);
+    if (valid_dice_expression)
+        gtk_widget_override_background_color(dice_expr, GTK_STATE_FLAG_NORMAL, NULL);
+    else {
+        const GdkRGBA light_red = { 1.0, 0.0, 0.0, 0.5 };
+        gtk_widget_override_background_color(dice_expr, GTK_STATE_FLAG_NORMAL, &light_red);
+    }
 }
