@@ -51,6 +51,12 @@ static void
 set_ui_based_on_dice_expression_validity(GtkWidget *roll_button, GtkWidget *dice_expr,
     gboolean valid_dice_expression);
 
+static void
+reset(GtkWidget *button, gpointer user_data);
+
+static void
+zero_spinbutton(gpointer data, gpointer user_data);
+
 int
 main(int argc, char **argv) {
     // For de_parse().
@@ -69,6 +75,9 @@ main(int argc, char **argv) {
     GObject *roll_button = gtk_builder_get_object(builder, "roll_button");
     g_signal_connect(roll_button, "clicked", G_CALLBACK(roll), builder);
     gtk_widget_set_can_default(GTK_WIDGET(roll_button), TRUE);
+
+    GObject *reset_button = gtk_builder_get_object(builder, "reset_button");
+    g_signal_connect(reset_button, "clicked", G_CALLBACK(reset), builder);
 
     GObject *add_button = gtk_builder_get_object(builder, "add_button");
     g_signal_connect(GTK_WIDGET(add_button), "clicked", G_CALLBACK(add_dice), builder);
@@ -379,4 +388,58 @@ set_ui_based_on_dice_expression_validity(GtkWidget *roll_button, GtkWidget *dice
         const GdkRGBA light_red = { 1.0, 0.0, 0.0, 0.5 };
         gtk_widget_override_background_color(dice_expr, GTK_STATE_FLAG_NORMAL, &light_red);
     }
+}
+
+/** Reset.
+ * Set every spinbutton's and modifier's value to zero, set dice expression to
+ * empty string, remove results from textview and enable roll button.
+ * @param button
+ * @param user_data GtkBuilder.
+ */
+static void
+reset(GtkWidget *button, gpointer user_data) {
+    GtkBuilder *builder = user_data;
+
+    GObject *expr = gtk_builder_get_object(builder, "dice_expression");
+    gtk_entry_set_text(GTK_ENTRY(expr), "");
+
+    GObject *roll_button = gtk_builder_get_object(builder, "roll_button");
+    set_ui_based_on_dice_expression_validity(GTK_WIDGET(roll_button), GTK_WIDGET(expr), TRUE);
+
+    GObject *modifier = gtk_builder_get_object(builder, "modifier");
+    gtk_spin_button_set_value(GTK_SPIN_BUTTON(modifier), 0.0);
+
+    GObject *textview = gtk_builder_get_object(builder, "textview");
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
+    gtk_text_buffer_set_text(buffer, "", -1);
+
+    GObject *box = gtk_builder_get_object(builder, "const_dices");
+    GList *const_spin_buttons = gtk_container_get_children(GTK_CONTAINER(box));
+    g_list_foreach(const_spin_buttons, zero_spinbutton, NULL);
+    g_list_free(const_spin_buttons);
+
+    GObject *outer_box = gtk_builder_get_object(builder, "variable_dices_box");
+    GList *boxes = gtk_container_get_children(GTK_CONTAINER(outer_box));
+    for (GList *it = boxes; it != NULL; it = it->next) {
+        box = it->data;
+        GList *children = gtk_container_get_children(GTK_CONTAINER(box));
+
+        GtkSpinButton *sides = g_list_nth_data(children, 1);
+        gtk_spin_button_set_value(sides, 0.0);
+        GtkSpinButton *number_rolls = g_list_nth_data(children, 3);
+        gtk_spin_button_set_value(number_rolls, 0.0);
+
+        g_list_free(children);
+    }
+    g_list_free(boxes);
+}
+
+/** Set spinbutton value to zero.
+ * @param data
+ * @param user_data
+ */
+static void
+zero_spinbutton(gpointer data, gpointer user_data) {
+    GtkSpinButton *sp = data;
+    gtk_spin_button_set_value(sp, 0.0);
 }
