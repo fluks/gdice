@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include "diceexpr.h"
 
 typedef struct {
     gint sides, number_rolls;
@@ -40,6 +41,9 @@ roll_dices(GList *dices, gint64 *result, GString *result_string);
 static void
 add_modifier(gint modifier, gint64 *result, GString *result_string);
 
+static void
+add_dice_expression(const gchar *expr, gint64 *result, GString *result_string);
+
 int
 main(int argc, char **argv) {
     // For de_parse().
@@ -73,11 +77,11 @@ main(int argc, char **argv) {
 static void
 roll(GtkWidget *button, gpointer user_data) {
     GtkBuilder *builder = user_data;
-    
     gint64 result = 0;
     GString *result_string = g_string_new("");
 
-    //const gchar *expr = get_dice_expression(builder);
+    const gchar *expr = get_dice_expression(builder);
+    add_dice_expression(expr, &result, result_string);
 
     GList *const_dices = get_const_dices(builder);
     roll_dices(const_dices, &result, result_string);
@@ -91,11 +95,12 @@ roll(GtkWidget *button, gpointer user_data) {
     if (result_string->len == 0)
         goto clean_up;
 
+    if (*(result_string->str) == '+')
+        g_string_erase(result_string, 0, 1);
     g_string_append(result_string, " = ");
 
     GObject *textview = gtk_builder_get_object(builder, "textview");
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
-
     if (is_verbose(builder))
         gtk_text_buffer_insert_at_cursor(buffer, result_string->str, result_string->len);
     g_string_erase(result_string, 0, -1);
@@ -290,4 +295,26 @@ add_modifier(gint modifier, gint64 *result, GString *result_string) {
         return;
     *result += modifier;
     g_string_append_printf(result_string, "%+i", modifier);
+}
+
+/** Add result of a dice expression to results.
+ * @param expr A dice expression. If it's empty string, do nothing.
+ * @param result
+ * @param result_string
+ */
+static void
+add_dice_expression(const gchar *expr, gint64 *result, GString *result_string) {
+    if (g_strcmp0(expr, "") == 0)
+        return;
+
+    int_least64_t res = 0;
+    char *rolled_expr = NULL;
+    // Assume out of memory can't happen and input is validated before.
+    enum parse_error error = de_parse(expr, &res, &rolled_expr);
+    *result += res;
+    const gchar *prefix = "";
+    if (*rolled_expr != '+' && *rolled_expr != '-')
+        prefix = "+";
+    g_string_append_printf(result_string, "%s%s", prefix, rolled_expr);
+    free(rolled_expr);
 }
