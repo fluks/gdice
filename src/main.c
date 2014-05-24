@@ -81,14 +81,15 @@ roll(GtkWidget *button, gpointer user_data) {
 
     GList *const_dices = get_const_dices(builder);
     roll_dices(const_dices, &result, result_string);
-    g_list_free_full(const_dices, g_free);
 
     gint modifier = get_modifier(builder);
     add_modifier(modifier, &result, result_string);
 
     GList *var_dices = get_var_dices(builder);
     roll_dices(var_dices, &result, result_string);
-    g_list_free_full(var_dices, g_free);
+
+    if (result_string->len == 0)
+        goto clean_up;
 
     g_string_append(result_string, " = ");
 
@@ -100,7 +101,6 @@ roll(GtkWidget *button, gpointer user_data) {
     g_string_erase(result_string, 0, -1);
     g_string_append_printf(result_string, "%" G_GINT64_FORMAT "\n", result);
     gtk_text_buffer_insert_at_cursor(buffer, result_string->str, result_string->len);
-    g_string_free(result_string, TRUE);
 
     //GtkTextTag *tag = gtk_text_buffer_create_tag(buffer, NULL, "underline", PANGO_UNDERLINE_SINGLE,
         //NULL);
@@ -112,6 +112,11 @@ roll(GtkWidget *button, gpointer user_data) {
 
     GtkTextMark *mark = gtk_text_buffer_get_mark(buffer, "insert");
     gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(textview), mark, 0, FALSE, 0, 0);
+
+    clean_up:
+        g_list_free_full(const_dices, g_free);
+        g_list_free_full(var_dices, g_free);
+        g_string_free(result_string, TRUE);
 }
 
 /** Add a new variable dice.
