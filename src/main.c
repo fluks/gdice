@@ -54,11 +54,13 @@ main(int argc, char **argv) {
 
     GObject *roll_button = gtk_builder_get_object(builder, "roll_button");
     g_signal_connect(roll_button, "clicked", G_CALLBACK(roll), builder);
+    gtk_widget_set_can_default(GTK_WIDGET(roll_button), TRUE);
 
     GObject *add_button = gtk_builder_get_object(builder, "add_button");
     g_signal_connect(GTK_WIDGET(add_button), "clicked", G_CALLBACK(add_dice), builder);
 
     GObject *window = gtk_builder_get_object(builder, "window");
+    gtk_window_set_default(GTK_WINDOW(window), GTK_WIDGET(roll_button));
     gtk_widget_show_all(GTK_WIDGET(window));
 
     gtk_main();
@@ -245,6 +247,11 @@ is_verbose(GtkBuilder *builder) {
     return gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(item));
 }
 
+/** Roll many dices.
+ * @param dices List of dices.
+ * @param result
+ * @param result_string
+ */
 static void
 roll_dices(GList *dices, gint64 *result, GString *result_string) {
     for (GList *it = dices; it != NULL; it = it->next) {
@@ -267,6 +274,11 @@ roll_dices(GList *dices, gint64 *result, GString *result_string) {
     }
 }
 
+/** Add modifier to results.
+ * @param modifier
+ * @param result
+ * @param result_string
+ */
 static void
 add_modifier(gint modifier, gint64 *result, GString *result_string) {
     if (modifier == 0)
