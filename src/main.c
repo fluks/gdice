@@ -11,6 +11,11 @@ typedef struct {
     gint sides, number_rolls;
 } dice;
 
+typedef struct {
+    GtkWindow *window;
+    gboolean *is_fullscreen;
+} fullscreen_window;
+
 static void
 roll(GtkWidget *button, gpointer user_data);
 
@@ -57,6 +62,12 @@ reset(GtkWidget *button, gpointer user_data);
 static void
 zero_spinbutton(gpointer data, gpointer user_data);
 
+static void
+toggle_fullscreen(GtkMenuItem *item, gpointer user_data);
+
+static gboolean
+is_window_fullscreen(GtkWidget *window, GdkEvent *event, gpointer user_data);
+
 int
 main(int argc, char **argv) {
     // For de_parse().
@@ -84,6 +95,13 @@ main(int argc, char **argv) {
 
     GObject *window = gtk_builder_get_object(builder, "window");
     gtk_window_set_default(GTK_WINDOW(window), GTK_WIDGET(roll_button));
+
+    gboolean is_fullscreen = FALSE;
+    g_signal_connect(window, "window-state-event", G_CALLBACK(is_window_fullscreen), &is_fullscreen);
+    GObject *fullscreen = gtk_builder_get_object(builder, "fullscreen");
+    fullscreen_window fw = { GTK_WINDOW(window), &is_fullscreen };
+    g_signal_connect(fullscreen, "activate", G_CALLBACK(toggle_fullscreen), &fw);
+
     gtk_widget_show_all(GTK_WIDGET(window));
 
     gtk_main();
@@ -442,4 +460,32 @@ static void
 zero_spinbutton(gpointer data, gpointer user_data) {
     GtkSpinButton *sp = data;
     gtk_spin_button_set_value(sp, 0.0);
+}
+
+/** Set fullscreen flag of the window.
+ * @param window
+ * @param event
+ * @param user_data Boolean fullscreen flag.
+ * @return
+ */
+static gboolean
+is_window_fullscreen(GtkWidget *window, GdkEvent *event, gpointer user_data) {
+    gboolean *is_fullscreen = user_data;
+
+    *is_fullscreen = event->window_state.new_window_state & GDK_WINDOW_STATE_FULLSCREEN;
+
+    return FALSE;
+}
+
+/** Toggle fullscreen.
+ * @param item
+ * @param user_data Main GtkWindow.
+ */
+static void
+toggle_fullscreen(GtkMenuItem *item, gpointer user_data) {
+    fullscreen_window *fw = user_data;
+    if (*(fw->is_fullscreen))
+        gtk_window_unfullscreen(GTK_WINDOW(fw->window));
+    else
+        gtk_window_fullscreen(GTK_WINDOW(fw->window));
 }
