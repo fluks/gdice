@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "diceexpr.h"
+#include "config.h"
 #include "sound.h"
 
 typedef struct {
@@ -83,10 +84,10 @@ main(int argc, char **argv) {
     srand(time(NULL));
 
     gtk_init(&argc, &argv);
-    sound *s = sound_init(&argc, &argv, "res/dices.ogg");
+    sound *s = sound_init(&argc, &argv, CONFIG_DICE_SOUND);
 
     GtkBuilder *builder = gtk_builder_new();
-    gtk_builder_add_from_file(builder, "res/gdice.glade", NULL);
+    gtk_builder_add_from_file(builder, CONFIG_UI_DEFINITION_PATH, NULL);
 
     gtk_builder_connect_signals(builder, NULL);
 
