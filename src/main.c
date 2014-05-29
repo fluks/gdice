@@ -78,6 +78,9 @@ is_window_fullscreen(GtkWidget *window, GdkEvent *event, gpointer user_data);
 static gboolean
 sounds_enabled(GtkBuilder *builder);
 
+static void
+minimize_window(GtkContainer *container, GtkWidget *widget, gpointer user_data);
+
 int
 main(int argc, char **argv) {
     // For de_parse().
@@ -113,6 +116,9 @@ main(int argc, char **argv) {
     GObject *fullscreen = gtk_builder_get_object(builder, "fullscreen");
     fullscreen_window fw = { GTK_WINDOW(window), &is_fullscreen };
     g_signal_connect(fullscreen, "activate", G_CALLBACK(toggle_fullscreen), &fw);
+
+    GObject *variable_dices_box = gtk_builder_get_object(builder, "variable_dices_box");
+    g_signal_connect(variable_dices_box, "remove", G_CALLBACK(minimize_window), window);
 
     gtk_widget_show_all(GTK_WIDGET(window));
 
@@ -178,9 +184,13 @@ static void
 add_dice(GtkWidget *button, gpointer user_data) {
     GtkBuilder *builder = user_data;
 
-    GtkWidget *variable_dice = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+    GtkWidget *variable_dice = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
 
+    GObject *dN = gtk_builder_get_object(builder, "dN");
+    GtkAllocation alloc;
+    gtk_widget_get_allocation(dN, &alloc);
     GtkWidget *label = gtk_label_new_with_mnemonic("d_N");
+    gtk_widget_set_size_request(label, alloc.width, alloc.height);
     gtk_box_pack_start(GTK_BOX(variable_dice), label, FALSE, TRUE, 0);
 
     GtkWidget *sides = gtk_spin_button_new_with_range(0, 100000, 1);
@@ -196,7 +206,9 @@ add_dice(GtkWidget *button, gpointer user_data) {
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(number_rolls), 0);
     gtk_box_pack_start(GTK_BOX(variable_dice), number_rolls, TRUE, TRUE, 0);
 
-    GtkWidget *remove_button = gtk_button_new_with_mnemonic("_Remove");
+    GtkWidget *remove_button = gtk_button_new();
+    GtkWidget *remove_image = gtk_image_new_from_file(CONFIG_REMOVE_IMAGE_PATH);
+    gtk_button_set_image(GTK_BUTTON(remove_button), remove_image);
     g_signal_connect(remove_button, "clicked", G_CALLBACK(remove_dice), variable_dice);
     gtk_box_pack_start(GTK_BOX(variable_dice), remove_button, FALSE, TRUE, 0);
 
@@ -507,4 +519,15 @@ static gboolean
 sounds_enabled(GtkBuilder *builder) {
     GObject *item = gtk_builder_get_object(builder, "sound_checkbox");
     return gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(item));
+}
+
+/** Set size of the main window as small as possible to show all widgets.
+ * @param container Not used.
+ * @param widget Not used.
+ * @param user_data Main window. GtkWindow.
+ */
+static void
+minimize_window(GtkContainer *container, GtkWidget *widget, gpointer user_data) {
+    GtkWindow *window = user_data;
+    gtk_window_resize(window, 1, 1);
 }
