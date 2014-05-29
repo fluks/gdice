@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "diceexpr.h"
+#include "sound.h"
 
 typedef struct {
     gint sides, number_rolls;
@@ -15,6 +16,11 @@ typedef struct {
     GtkWindow *window;
     gboolean *is_fullscreen;
 } fullscreen_window;
+
+typedef struct {
+    GtkBuilder *builder;
+    sound *s;
+} roll_param;
 
 static void
 roll(GtkWidget *button, gpointer user_data);
@@ -68,12 +74,16 @@ toggle_fullscreen(GtkMenuItem *item, gpointer user_data);
 static gboolean
 is_window_fullscreen(GtkWidget *window, GdkEvent *event, gpointer user_data);
 
+static gboolean
+sounds_enabled(GtkBuilder *builder);
+
 int
 main(int argc, char **argv) {
     // For de_parse().
     srand(time(NULL));
 
     gtk_init(&argc, &argv);
+    sound *s = sound_init(&argc, &argv, "res/dices.ogg");
 
     GtkBuilder *builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, "res/gdice.glade", NULL);
@@ -84,7 +94,8 @@ main(int argc, char **argv) {
     g_signal_connect(dice_expr, "key-release-event", G_CALLBACK(validate_dice_expr), builder);
 
     GObject *roll_button = gtk_builder_get_object(builder, "roll_button");
-    g_signal_connect(roll_button, "clicked", G_CALLBACK(roll), builder);
+    roll_param rp = { builder, s };
+    g_signal_connect(roll_button, "clicked", G_CALLBACK(roll), &rp);
     gtk_widget_set_can_default(GTK_WIDGET(roll_button), TRUE);
 
     GObject *reset_button = gtk_builder_get_object(builder, "reset_button");
@@ -105,52 +116,49 @@ main(int argc, char **argv) {
     gtk_widget_show_all(GTK_WIDGET(window));
 
     gtk_main();
+
+    sound_end(s);
 }
 
 /** Roll dices and put result to TextView.
  * @param button Roll button. Not used.
- * @param user_data GtkBuilder object.
+ * @param user_data roll_param struct.
  */
 static void
 roll(GtkWidget *button, gpointer user_data) {
-    GtkBuilder *builder = user_data;
+    roll_param *rp = user_data;
     gint64 result = 0;
     GString *result_string = g_string_new("");
 
-    const gchar *expr = get_dice_expression(builder);
+    const gchar *expr = get_dice_expression(rp->builder);
     add_dice_expression(expr, &result, result_string);
 
-    GList *const_dices = get_const_dices(builder);
+    GList *const_dices = get_const_dices(rp->builder);
     roll_dices(const_dices, &result, result_string);
 
-    gint modifier = get_modifier(builder);
+    gint modifier = get_modifier(rp->builder);
     add_modifier(modifier, &result, result_string);
 
-    GList *var_dices = get_var_dices(builder);
+    GList *var_dices = get_var_dices(rp->builder);
     roll_dices(var_dices, &result, result_string);
 
     if (result_string->len == 0)
         goto clean_up;
 
+    if (sounds_enabled(rp->builder))
+        sound_play(rp->s);
+
     if (*(result_string->str) == '+')
         g_string_erase(result_string, 0, 1);
     g_string_append(result_string, " = ");
 
-    GObject *textview = gtk_builder_get_object(builder, "textview");
+    GObject *textview = gtk_builder_get_object(rp->builder, "textview");
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
-    if (is_verbose(builder))
+    if (is_verbose(rp->builder))
         gtk_text_buffer_insert_at_cursor(buffer, result_string->str, result_string->len);
     g_string_erase(result_string, 0, -1);
     g_string_append_printf(result_string, "%" G_GINT64_FORMAT "\n", result);
     gtk_text_buffer_insert_at_cursor(buffer, result_string->str, result_string->len);
-
-    //GtkTextTag *tag = gtk_text_buffer_create_tag(buffer, NULL, "underline", PANGO_UNDERLINE_SINGLE,
-        //NULL);
-    //GtkTextIter start, *end;
-    //gtk_text_buffer_get_end_iter(buffer, &start);
-    //end = gtk_text_iter_copy(&start);
-    //gtk_text_iter_backward_chars(&start, 2);
-    //gtk_text_buffer_apply_tag(buffer, tag, &start, end);
 
     GtkTextMark *mark = gtk_text_buffer_get_mark(buffer, "insert");
     gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(textview), mark, 0, FALSE, 0, 0);
@@ -488,4 +496,14 @@ toggle_fullscreen(GtkMenuItem *item, gpointer user_data) {
         gtk_window_unfullscreen(GTK_WINDOW(fw->window));
     else
         gtk_window_fullscreen(GTK_WINDOW(fw->window));
+}
+
+/** Check if sounds are enabled.
+ * @param builder
+ * @return True if sounds are enabled, false otherwise.
+ */
+static gboolean
+sounds_enabled(GtkBuilder *builder) {
+    GObject *item = gtk_builder_get_object(builder, "sound_checkbox");
+    return gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(item));
 }
