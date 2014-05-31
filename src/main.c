@@ -366,22 +366,20 @@ is_verbose(GtkBuilder *builder) {
  */
 static gboolean
 roll_dices(GList *dices, int_least64_t *result, GString *result_string, GString *error) {
+    enum flow_type overflow;
     for (GList *it = dices; it != NULL; it = it->next) {
         dice *d = it->data;
         if (d->sides == 0 || d->number_rolls == 0)
             continue;
 
         int_least64_t sum = 0;
-        enum flow_type overflow;
         gint sign = d->number_rolls < 0 ? -1 : 1;
         g_string_append_printf(result_string, "%c(", sign < 0 ? '-' : '+');
         for (gint i = 0; i < ABS(d->number_rolls); i++) {
             gint32 roll = g_random_int_range(1, d->sides + 1);
             NF_PLUS(sum, roll, INT_LEAST64, overflow);
-            if (overflow != 0) {
-                g_string_append(error, "integer overflow\n");
-                return FALSE;
-            }
+            if (overflow != 0)
+                goto integer_overflow;
             sum += roll;
             g_string_append_printf(result_string, "%" G_GINT32_FORMAT, roll);
             if (i != ABS(d->number_rolls) - 1)
@@ -389,19 +387,20 @@ roll_dices(GList *dices, int_least64_t *result, GString *result_string, GString 
         }
         g_string_append_c(result_string, ')');
         NF_MULTIPLY(sum, sign, INT_LEAST64, overflow);
-        if (overflow != 0) {
-            g_string_append(error, "integer overflow\n");
-            return FALSE;
-        }
+        if (overflow != 0)
+            goto integer_overflow;
         sum *= sign;
         NF_PLUS(*result, sum, INT_LEAST64, overflow);
-        if (overflow != 0) {
-            g_string_append(error, "integer overflow\n");
-            return FALSE;
-        }
+        if (overflow != 0)
+            goto integer_overflow;
         *result += sum;
     }
+
     return TRUE;
+
+    integer_overflow:
+        g_string_append(error, "integer overflow\n");
+        return FALSE;
 }
 
 /** Add modifier to results.
