@@ -460,14 +460,12 @@ add_dice_expression(const gchar *expr, int_least64_t *result, GString *result_st
         case DE_OVERFLOW:
             g_string_assign(error, "integer overflow\n");
             return FALSE;
-        /* OK */
-        default: ;
+        default:
+            *result = res;
+            g_string_append(result_string, rolled_expr);
+            free(rolled_expr);
+            return TRUE;
     }
-    *result = res;
-    g_string_append(result_string, rolled_expr);
-    free(rolled_expr);
-
-    return TRUE;
 }
 
 /** Validate dice expression.
