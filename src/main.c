@@ -53,8 +53,9 @@ roll_dices(GList *dices, gint64 *result, GString *result_string);
 static void
 add_modifier(gint modifier, gint64 *result, GString *result_string);
 
-static void
-add_dice_expression(const gchar *expr, gint64 *result, GString *result_string);
+static gboolean
+add_dice_expression(const gchar *expr, gint64 *result, GString *result_string,
+    GString *error);
 
 static gboolean
 validate_dice_expr(GtkWidget *entry, GdkEvent *event, gpointer builder);
@@ -80,6 +81,12 @@ sounds_enabled(GtkBuilder *builder);
 
 static void
 minimize_window(GtkContainer *container, GtkWidget *widget, gpointer user_data);
+
+static void
+form_result_string(GString *s, gint64 result, GtkBuilder *builder);
+
+static void
+insert_string_to_buffer(GString *s, GtkBuilder *builder);
 
 int
 main(int argc, char **argv) {
@@ -136,44 +143,75 @@ roll(GtkWidget *button, gpointer user_data) {
     roll_param *rp = user_data;
     gint64 result = 0;
     GString *result_string = g_string_new("");
+    GString *error = g_string_new("");
+    GList *const_dices = NULL, *var_dices = NULL;
 
     const gchar *expr = get_dice_expression(rp->builder);
-    add_dice_expression(expr, &result, result_string);
+    if (!add_dice_expression(expr, &result, result_string, error))
+        goto error;
 
-    GList *const_dices = get_const_dices(rp->builder);
+    const_dices = get_const_dices(rp->builder);
     roll_dices(const_dices, &result, result_string);
 
     gint modifier = get_modifier(rp->builder);
     add_modifier(modifier, &result, result_string);
 
-    GList *var_dices = get_var_dices(rp->builder);
+    var_dices = get_var_dices(rp->builder);
     roll_dices(var_dices, &result, result_string);
 
+    /* No input. */
     if (result_string->len == 0)
         goto clean_up;
 
     if (sounds_enabled(rp->builder))
         sound_play(rp->s);
 
-    if (*(result_string->str) == '+')
-        g_string_erase(result_string, 0, 1);
-    g_string_append(result_string, " = ");
+    form_result_string(result_string, result, rp->builder);
+    insert_string_to_buffer(result_string, rp->builder);
+    goto clean_up;
 
-    GObject *textview = gtk_builder_get_object(rp->builder, "textview");
+    error:
+        insert_string_to_buffer(error, rp->builder);
+
+    clean_up:
+        if (const_dices != NULL)
+            g_list_free_full(const_dices, g_free);
+        if (var_dices != NULL)
+            g_list_free_full(var_dices, g_free);
+        g_string_free(result_string, TRUE);
+        g_string_free(error, TRUE);
+}
+
+/** Form the result string, verbose or just the integer.
+ * @param s Result string.
+ * @param result Integer result.
+ * @param builder
+ */
+static void
+form_result_string(GString *s, gint64 result, GtkBuilder *builder) {
+    if (is_verbose(builder)) {
+        if (*(s->str) == '+')
+            g_string_erase(s, 0, 1);
+        g_string_append(s, " = ");
+    }
+    else
+        g_string_erase(s, 0, -1);
+
+    g_string_append_printf(s, "%" G_GINT64_FORMAT "\n", result);
+}
+
+/** Insert result string to the textview and scroll to the end of the textview.
+ * @param s Result string.
+ * @param builder
+ */
+static void
+insert_string_to_buffer(GString *s, GtkBuilder *builder) {
+    GObject *textview = gtk_builder_get_object(builder, "textview");
     GtkTextBuffer *buffer = gtk_text_view_get_buffer(GTK_TEXT_VIEW(textview));
-    if (is_verbose(rp->builder))
-        gtk_text_buffer_insert_at_cursor(buffer, result_string->str, result_string->len);
-    g_string_erase(result_string, 0, -1);
-    g_string_append_printf(result_string, "%" G_GINT64_FORMAT "\n", result);
-    gtk_text_buffer_insert_at_cursor(buffer, result_string->str, result_string->len);
+    gtk_text_buffer_insert_at_cursor(buffer, s->str, s->len);
 
     GtkTextMark *mark = gtk_text_buffer_get_mark(buffer, "insert");
     gtk_text_view_scroll_to_mark(GTK_TEXT_VIEW(textview), mark, 0, FALSE, 0, 0);
-
-    clean_up:
-        g_list_free_full(const_dices, g_free);
-        g_list_free_full(var_dices, g_free);
-        g_string_free(result_string, TRUE);
 }
 
 /** Add a new variable dice.
@@ -188,7 +226,7 @@ add_dice(GtkWidget *button, gpointer user_data) {
 
     GObject *dN = gtk_builder_get_object(builder, "dN");
     GtkAllocation alloc;
-    gtk_widget_get_allocation(dN, &alloc);
+    gtk_widget_get_allocation(GTK_WIDGET(dN), &alloc);
     GtkWidget *label = gtk_label_new_with_mnemonic("d_N");
     gtk_widget_set_size_request(label, alloc.width, alloc.height);
     gtk_box_pack_start(GTK_BOX(variable_dice), label, FALSE, TRUE, 0);
@@ -359,22 +397,42 @@ add_modifier(gint modifier, gint64 *result, GString *result_string) {
  * @param expr A dice expression. If it's empty string, do nothing.
  * @param result
  * @param result_string
+ * @param error
+ * @return TRUE if nothing failed or no input, FALSE otherwise.
  */
-static void
-add_dice_expression(const gchar *expr, gint64 *result, GString *result_string) {
+static gboolean
+add_dice_expression(const gchar *expr, gint64 *result, GString *result_string,
+    GString *error) {
     if (g_strcmp0(expr, "") == 0)
-        return;
+        return TRUE;
 
     int_least64_t res = 0;
     char *rolled_expr = NULL;
-    // Assume out of memory can't happen and input is validated before.
-    enum parse_error error = de_parse(expr, &res, &rolled_expr);
+    enum parse_error e = de_parse(expr, &res, &rolled_expr);
+    /* Overflow and syntax errors should be caught in the validator function, but
+     * because that is called on key-release-event, a roll button press can be
+     * registered if pressed very quickly before the roll button is disabled.
+     */
+    switch (e) {
+        /* Fallthrough! */
+        case DE_INVALID_CHARACTER : case DE_SYNTAX_ERROR : case DE_NROLLS :
+        case DE_IGNORE : case DE_DICE:
+            g_string_assign(error, "syntax error\n");
+            return FALSE;
+        case DE_MEMORY:
+            g_printerr("Out of memory\n");
+            abort();
+        case DE_OVERFLOW:
+            g_string_assign(error, "integer overflow\n");
+            return FALSE;
+        /* OK */
+        default: ;
+    }
     *result += res;
-    const gchar *prefix = "";
-    if (*rolled_expr != '+' && *rolled_expr != '-')
-        prefix = "+";
-    g_string_append_printf(result_string, "%s%s", prefix, rolled_expr);
+    g_string_append(result_string, rolled_expr);
     free(rolled_expr);
+
+    return TRUE;
 }
 
 /** Validate dice expression.
@@ -382,13 +440,11 @@ add_dice_expression(const gchar *expr, gint64 *result, GString *result_string) {
  * @param entry Dice expression entry.
  * @param event
  * @param user_data GtkBuilder.
- * @return
+ * @return TRUE to stop other handlers for the event, FALSE otherwise.
  */
 static gboolean
 validate_dice_expr(GtkWidget *entry, GdkEvent *event, gpointer user_data) {
     GtkBuilder *builder = user_data;
-    int_least64_t result = 0;
-    char *rolled_expr = NULL;
 
     GObject *roll_button = gtk_builder_get_object(builder, "roll_button");
     const gchar *expr = gtk_entry_get_text(GTK_ENTRY(entry));
@@ -397,13 +453,22 @@ validate_dice_expr(GtkWidget *entry, GdkEvent *event, gpointer user_data) {
         return FALSE;
     }
 
-    enum parse_error error = de_parse(expr, &result, &rolled_expr);
-    switch (error) {
-        // Fallthrough!
+    int_least64_t result = 0;
+    char *rolled_expr = NULL;
+    enum parse_error e = de_parse(expr, &result, &rolled_expr);
+    switch (e) {
+        /* Don't catch DE_OVERFLOW here because same expression can sometimes
+         * result to overflow and others not.
+         */
+        /* Fallthrough! */
         case DE_INVALID_CHARACTER: case DE_SYNTAX_ERROR: case DE_NROLLS:
         case DE_IGNORE: case DE_DICE:
             set_ui_based_on_dice_expression_validity(GTK_WIDGET(roll_button), entry, FALSE);
             break;
+        /* TODO Maybe just free rolled_expr, but then what? */
+        case DE_MEMORY:
+            g_printerr("Out of memory\n");
+            abort();
         default:
             set_ui_based_on_dice_expression_validity(GTK_WIDGET(roll_button), entry, TRUE);
     }
