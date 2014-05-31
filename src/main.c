@@ -1,6 +1,6 @@
 #include <gtk/gtk.h>
 #include <glib.h>
-#include <stdint.h>
+#include <inttypes.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,6 +8,7 @@
 #include "diceexpr.h"
 #include "config.h"
 #include "sound.h"
+#include "numflow.h"
 
 typedef struct {
     gint sides, number_rolls;
@@ -47,14 +48,14 @@ get_dice_expression(GtkBuilder *builder);
 static gboolean
 is_verbose(GtkBuilder *builder);
 
-static void
-roll_dices(GList *dices, gint64 *result, GString *result_string);
-
-static void
-add_modifier(gint modifier, gint64 *result, GString *result_string);
+static gboolean
+roll_dices(GList *dices, int_least64_t *result, GString *result_string, GString *error);
 
 static gboolean
-add_dice_expression(const gchar *expr, gint64 *result, GString *result_string,
+add_modifier(gint modifier, int_least64_t *result, GString *result_string, GString *error);
+
+static gboolean
+add_dice_expression(const gchar *expr, int_least64_t *result, GString *result_string,
     GString *error);
 
 static gboolean
@@ -83,7 +84,7 @@ static void
 minimize_window(GtkContainer *container, GtkWidget *widget, gpointer user_data);
 
 static void
-form_result_string(GString *s, gint64 result, GtkBuilder *builder);
+form_result_string(GString *s, int_least64_t result, GtkBuilder *builder);
 
 static void
 insert_string_to_buffer(GString *s, GtkBuilder *builder);
@@ -141,7 +142,7 @@ main(int argc, char **argv) {
 static void
 roll(GtkWidget *button, gpointer user_data) {
     roll_param *rp = user_data;
-    gint64 result = 0;
+    int_least64_t result = 0;
     GString *result_string = g_string_new("");
     GString *error = g_string_new("");
     GList *const_dices = NULL, *var_dices = NULL;
@@ -151,13 +152,16 @@ roll(GtkWidget *button, gpointer user_data) {
         goto error;
 
     const_dices = get_const_dices(rp->builder);
-    roll_dices(const_dices, &result, result_string);
+    if (!roll_dices(const_dices, &result, result_string, error))
+        goto error;
 
     gint modifier = get_modifier(rp->builder);
-    add_modifier(modifier, &result, result_string);
+    if (!add_modifier(modifier, &result, result_string, error))
+        goto error;
 
     var_dices = get_var_dices(rp->builder);
-    roll_dices(var_dices, &result, result_string);
+    if (!roll_dices(var_dices, &result, result_string, error))
+        goto error;
 
     /* No input. */
     if (result_string->len == 0)
@@ -188,7 +192,7 @@ roll(GtkWidget *button, gpointer user_data) {
  * @param builder
  */
 static void
-form_result_string(GString *s, gint64 result, GtkBuilder *builder) {
+form_result_string(GString *s, int_least64_t result, GtkBuilder *builder) {
     if (is_verbose(builder)) {
         if (*(s->str) == '+')
             g_string_erase(s, 0, 1);
@@ -197,7 +201,7 @@ form_result_string(GString *s, gint64 result, GtkBuilder *builder) {
     else
         g_string_erase(s, 0, -1);
 
-    g_string_append_printf(s, "%" G_GINT64_FORMAT "\n", result);
+    g_string_append_printf(s, "%" PRIdLEAST64 "\n", result);
 }
 
 /** Insert result string to the textview and scroll to the end of the textview.
@@ -357,40 +361,72 @@ is_verbose(GtkBuilder *builder) {
  * @param dices List of dices.
  * @param result
  * @param result_string
+ * @param error
+ * @return FALSE if integer overflows, TRUE otherwise.
  */
-static void
-roll_dices(GList *dices, gint64 *result, GString *result_string) {
+static gboolean
+roll_dices(GList *dices, int_least64_t *result, GString *result_string, GString *error) {
     for (GList *it = dices; it != NULL; it = it->next) {
         dice *d = it->data;
         if (d->sides == 0 || d->number_rolls == 0)
             continue;
 
-        gint64 sum = 0;
+        int_least64_t sum = 0;
+        enum flow_type overflow;
         gint sign = d->number_rolls < 0 ? -1 : 1;
         g_string_append_printf(result_string, "%c(", sign < 0 ? '-' : '+');
         for (gint i = 0; i < ABS(d->number_rolls); i++) {
             gint32 roll = g_random_int_range(1, d->sides + 1);
+            NF_PLUS(sum, roll, INT_LEAST64, overflow);
+            if (overflow != 0) {
+                g_string_append(error, "integer overflow\n");
+                return FALSE;
+            }
             sum += roll;
             g_string_append_printf(result_string, "%" G_GINT32_FORMAT, roll);
             if (i != ABS(d->number_rolls) - 1)
                 g_string_append_c(result_string, '+');
         }
         g_string_append_c(result_string, ')');
-        *result += sign * sum;
+        NF_MULTIPLY(sum, sign, INT_LEAST64, overflow);
+        if (overflow != 0) {
+            g_string_append(error, "integer overflow\n");
+            return FALSE;
+        }
+        sum *= sign;
+        NF_PLUS(*result, sum, INT_LEAST64, overflow);
+        if (overflow != 0) {
+            g_string_append(error, "integer overflow\n");
+            return FALSE;
+        }
+        *result += sum;
     }
+    return TRUE;
 }
 
 /** Add modifier to results.
  * @param modifier
  * @param result
  * @param result_string
+ * @param error
+ * @return FALSE if integer overflows, TRUE otherwise.
  */
-static void
-add_modifier(gint modifier, gint64 *result, GString *result_string) {
+static gboolean
+add_modifier(gint modifier, int_least64_t *result, GString *result_string, GString *error) {
     if (modifier == 0)
-        return;
+        return TRUE;
+
+    enum flow_type overflow;
+    NF_PLUS(*result, modifier, INT_LEAST64, overflow);
+    if (overflow != 0) {
+        g_string_append(error, "integer overflow\n");
+        return FALSE;
+    }
+
     *result += modifier;
     g_string_append_printf(result_string, "%+i", modifier);
+
+    return TRUE;
 }
 
 /** Add result of a dice expression to results.
@@ -401,7 +437,7 @@ add_modifier(gint modifier, gint64 *result, GString *result_string) {
  * @return TRUE if nothing failed or no input, FALSE otherwise.
  */
 static gboolean
-add_dice_expression(const gchar *expr, gint64 *result, GString *result_string,
+add_dice_expression(const gchar *expr, int_least64_t *result, GString *result_string,
     GString *error) {
     if (g_strcmp0(expr, "") == 0)
         return TRUE;
@@ -428,7 +464,7 @@ add_dice_expression(const gchar *expr, gint64 *result, GString *result_string,
         /* OK */
         default: ;
     }
-    *result += res;
+    *result = res;
     g_string_append(result_string, rolled_expr);
     free(rolled_expr);
 

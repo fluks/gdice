@@ -104,7 +104,7 @@ enum flow_type {
             error = NF_UNDERFLOW;                 \
     }                                             \
     else if ((first) > 0 && (second) < 0) {       \
-        if (type##_MIN / (second) < (first))      \
+        if (type##_MIN / (first) > (second))      \
             error = NF_UNDERFLOW;                 \
     }                                             \
 }
