@@ -3,3 +3,4 @@ gdice
 tags
 src/de.tab.*
 src/lex.yy.c
+build/
