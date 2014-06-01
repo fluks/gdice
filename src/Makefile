@@ -6,14 +6,13 @@ CFLAGS += -D_XOPEN_SOURCE
 CFLAGS += -D_GNU_SOURCE
 LDLIBS = $(shell pkg-config --libs gtk+-3.0 glib-2.0 gstreamer-1.0)
 sources = $(wildcard *.c)
-objects = $(sources:.c=.o)
+no_objects = de.tab.o lex.yy.o
+objects = $(filter-out $(no_objects), $(sources:.c=.o))
 
 .PHONY: all ctags clean
 
-all: $(objects) diceexpr
-	$(CC) $(CFLAGS) sound.o str.o de.tab.c lex.yy.c $< -o ../$(bin) $(LDLIBS)
-
-diceexpr: str.o de.tab.c lex.yy.c
+all: $(objects) de.tab.c lex.yy.c
+	$(CC) $(CFLAGS) $^ -o ../$(bin) $(LDLIBS)
 
 de.tab.c: de.y str.o
 	bison -d $<
