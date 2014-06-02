@@ -5,3 +5,4 @@ src/de.tab.*
 src/lex.yy.c
 build/
 src/config.h
+src/prefix
