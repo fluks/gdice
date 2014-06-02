@@ -10,15 +10,17 @@ sound_init(int *argc, char ***argv, const gchar *file) {
     gst_init(argc, argv);
 
     sound *s = g_new(sound, 1);
-    s->player = gst_element_factory_make("playbin", "player");
+    s->player = NULL;
 
     GError *error = NULL;
     gchar *uri = gst_filename_to_uri(file, &error);
     if (uri == NULL) {
         g_printerr("%s\n", error->message);
         g_error_free(error);
-        return NULL;
+        return s;
     }
+
+    s->player = gst_element_factory_make("playbin", "player");
     g_object_set(G_OBJECT(s->player), "uri", uri, NULL);
     g_free(uri);
 
@@ -31,6 +33,9 @@ sound_init(int *argc, char ***argv, const gchar *file) {
 
 void
 sound_play(sound *s) {
+    if (s->player == NULL)
+        return;
+
     if (GST_STATE(s->player) == GST_STATE_PLAYING)
         return;
     gst_element_set_state(s->player, GST_STATE_PLAYING);
@@ -38,8 +43,10 @@ sound_play(sound *s) {
 
 void
 sound_end(sound *s) {
-    gst_element_set_state(s->player, GST_STATE_NULL);
-    gst_object_unref(s->player);
+    if (s->player != NULL) {
+        gst_element_set_state(s->player, GST_STATE_NULL);
+        gst_object_unref(s->player);
+    }
     g_free(s);
 }
 

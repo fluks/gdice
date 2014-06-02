@@ -12,7 +12,7 @@ typedef struct {
  * @param argc
  * @param argv
  * @param file Sound file to play.
- * @return A new sound object or NULL if failed to initialize sounds.
+ * @return sound object.
  */
 sound*
 sound_init(int *argc, char ***argv, const gchar *file);
