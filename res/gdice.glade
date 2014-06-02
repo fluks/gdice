@@ -74,8 +74,10 @@
           <object class="GtkGrid" id="grid1">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="row_spacing">5</property>
+            <property name="column_spacing">5</property>
             <child>
-              <object class="GtkLabel" id="label1">
+              <object class="GtkLabel" id="dice_expression_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">ex_pr</property>
@@ -421,6 +423,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
+                <property name="spacing">5</property>
                 <child>
                   <object class="GtkSpinButton" id="d4">
                     <property name="visible">True</property>
@@ -548,14 +551,17 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
+            <property name="spacing">5</property>
             <child>
               <object class="GtkBox" id="variable_dice1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="spacing">5</property>
                 <child>
                   <object class="GtkLabel" id="dN">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="xpad">7</property>
                     <property name="label" translatable="yes">d_N</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">variable_dice_sides1</property>
@@ -612,13 +618,18 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="add_button">
-                    <property name="label">gtk-add</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
                     <property name="image_position">top</property>
                     <property name="always_show_image">True</property>
+                    <child>
+                      <object class="GtkImage" id="add_image">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="pixbuf">add_12x12.svg</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
