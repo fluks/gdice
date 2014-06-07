@@ -24,3 +24,8 @@ Uninstall
 
 Running make creates src/prefix file, containg $PREFIX, uninstall goal needs
 that.
+
+Screenshot
+==========
+
+[!gdice](https://github.com/fluks/gdice/raw/master/gdice.png)
