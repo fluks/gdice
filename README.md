@@ -28,4 +28,4 @@ that.
 Screenshot
 ==========
 
-[!gdice](https://github.com/fluks/gdice/raw/master/gdice.png)
+![gdice](https://github.com/fluks/gdice/raw/master/gdice.png)
