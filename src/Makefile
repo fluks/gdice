@@ -29,7 +29,7 @@ ifneq ($(goal),)
 	share_dir := $(PREFIX)/share/$(bin)
 endif
 
-.PHONY: all ctags clean create_config_h install uninstall
+.PHONY: all clean create_config_h install uninstall
 
 all: create_config_h $(objects) $(generated_parser_sources)
 	echo $(PREFIX) > $(prefix_file)
@@ -55,10 +55,6 @@ uninstall:
 	rmdir $(share_dir)
 	$(RM) $(bin_dir)/*
 	rmdir $(bin_dir)
-
-ctags:
-	ctags -o ../tags -R --c++-kinds=+p --fields=+iaS --extra=+q \
-		$(filter-out -p%, $(subst -I,, $(shell pkg-config --cflags gtk+-3.0 glib-2.0 gstreamer-1.0))) .
 
 clean:
 	-$(RM) *.o $(generated_parser_sources) de.tab.h config.h $(prefix_file) ../$(bin)

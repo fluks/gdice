@@ -6,8 +6,8 @@ all:
 	$(MAKE) -C $(src_dir) $@ $(MAKEFLAGS)
 
 ctags:
-	$(MAKE) -C $(src_dir) $@
-
+	ctags -o tags -R --c++-kinds=+p --fields=+iaS --extra=+q \
+		$(filter-out -p%, $(subst -I,, $(shell pkg-config --cflags gtk+-3.0 glib-2.0 gstreamer-1.0))) $(src_dir)
 clean:
 	$(MAKE) -C $(src_dir) $@
 
