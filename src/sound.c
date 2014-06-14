@@ -20,13 +20,18 @@ sound_init(int *argc, char ***argv, const gchar *file) {
         return s;
     }
 
-    s->player = gst_element_factory_make("playbin", "player");
+    if ((s->player = gst_element_factory_make("playbin", "player")) == NULL) {
+        g_printerr("Can't create playbin element.\n");
+        goto clean_up;
+    }
     g_object_set(G_OBJECT(s->player), "uri", uri, NULL);
-    g_free(uri);
 
     GstBus *bus = gst_element_get_bus(s->player);
     gst_bus_add_watch(bus, bus_cb, s->player);
     gst_object_unref(bus);
+
+    clean_up:
+        g_free(uri);
 
     return s;
 }
@@ -38,7 +43,9 @@ sound_play(sound *s) {
 
     if (GST_STATE(s->player) == GST_STATE_PLAYING)
         return;
-    gst_element_set_state(s->player, GST_STATE_PLAYING);
+    if (gst_element_set_state(s->player, GST_STATE_PLAYING) ==
+            GST_STATE_CHANGE_FAILURE)
+        g_printerr("Failed to set playbin's state to playing.\n");
 }
 
 void
@@ -56,8 +63,13 @@ bus_cb(GstBus *bus, GstMessage *message, gpointer user_data) {
 
     switch (GST_MESSAGE_TYPE(message)) {
         case GST_MESSAGE_EOS:
-            gst_element_set_state(player, GST_STATE_PAUSED);
-            gst_element_seek_simple(player, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, 0);
+            if (gst_element_set_state(player, GST_STATE_PAUSED) ==
+                    GST_STATE_CHANGE_FAILURE)
+                g_printerr("Failed to set playbin's state to paused.\n");
+            if (!gst_element_seek_simple(player, GST_FORMAT_TIME,
+                    GST_SEEK_FLAG_FLUSH, 0))
+                g_printerr("Failed to seek to start of stream.\n");
+
             break;
         case GST_MESSAGE_ERROR: {
             GError *error = NULL;
