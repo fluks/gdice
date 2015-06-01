@@ -253,6 +253,10 @@ roll(int_least64_t nrolls,
     if (small + large >= nrolls)
         return DE_IGNORE;
 
+    enum flow_type interror;
+    NF_UMULTIPLY(nrolls, sizeof(int_least64_t), SIZE, interror);
+    if (interror != 0)
+        return DE_OVERFLOW;
     int_least64_t *rolls = malloc(nrolls * sizeof(*rolls));
     if (rolls == NULL)
         return DE_MEMORY;
@@ -271,9 +275,8 @@ roll(int_least64_t nrolls,
     int_least64_t sum = 0;
     int_least64_t nth_included_roll = 0;
     for (int_least64_t i = small; i < nrolls - large; i++, nth_included_roll++) {
-        enum flow_type overflow;
-        NF_PLUS(sum, rolls[i], INT_LEAST64, overflow);
-        if (overflow != 0)
+        NF_PLUS(sum, rolls[i], INT_LEAST64, interror);
+        if (interror != 0)
             return DE_OVERFLOW;
         sum += rolls[i];
 
