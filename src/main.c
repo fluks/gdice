@@ -78,6 +78,9 @@ form_result_string(GString *s, int_least64_t result, GtkBuilder *builder);
 static void
 insert_string_to_buffer(GString *s, GtkBuilder *builder);
 
+static void
+set_window_icon(GtkWindow *window);
+
 int
 main(int argc, char **argv) {
     // For de_parse().
@@ -108,6 +111,7 @@ main(int argc, char **argv) {
     GObject *window = gtk_builder_get_object(builder, "window");
     gtk_window_set_default(GTK_WINDOW(window), GTK_WIDGET(roll_button));
     gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+	set_window_icon(GTK_WINDOW(window));
 
     GObject *variable_dices_box = gtk_builder_get_object(builder, "variable_dices_box");
     g_signal_connect(variable_dices_box, "remove", G_CALLBACK(minimize_window), window);
@@ -584,4 +588,21 @@ static void
 minimize_window(GtkContainer *container, GtkWidget *widget, gpointer user_data) {
     GtkWindow *window = user_data;
     gtk_window_resize(window, 1, 1);
+}
+
+/** Set icon for the main window.
+ * @param window
+ */
+static void
+set_window_icon(GtkWindow *window) {
+	GError *error = NULL;
+	GdkPixbuf *icon_buf = gdk_pixbuf_new_from_file(CONFIG_ICON_PATH, &error);
+	if (icon_buf) {
+		gtk_window_set_icon(window, icon_buf);
+		g_object_unref(icon_buf);
+	}
+	else {
+		g_printerr("Can't load icon: %s\n", error->message);
+		g_error_free(error);
+	}
 }
