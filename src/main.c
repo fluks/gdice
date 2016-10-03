@@ -87,10 +87,10 @@ main(int argc, char **argv) {
     srand(time(NULL));
 
     gtk_init(&argc, &argv);
-    sound *s = sound_init(&argc, &argv, CONFIG_DICE_SOUND);
+    sound *s = sound_init(&argc, &argv, RESDIR "dices.ogg");
 
     GtkBuilder *builder = gtk_builder_new();
-    gtk_builder_add_from_file(builder, CONFIG_UI_DEFINITION_PATH, NULL);
+    gtk_builder_add_from_file(builder, RESDIR "gdice.glade", NULL);
 
     gtk_builder_connect_signals(builder, NULL);
 
@@ -237,7 +237,7 @@ add_dice(GtkWidget *button, gpointer user_data) {
     gtk_box_pack_start(GTK_BOX(variable_dice), number_rolls, TRUE, TRUE, 0);
 
     GtkWidget *remove_button = gtk_button_new();
-    GtkWidget *remove_image = gtk_image_new_from_file(CONFIG_REMOVE_IMAGE_PATH);
+    GtkWidget *remove_image = gtk_image_new_from_file(RESDIR "remove_12x12.svg");
     gtk_button_set_image(GTK_BUTTON(remove_button), remove_image);
     g_signal_connect(remove_button, "clicked", G_CALLBACK(remove_dice), variable_dice);
     gtk_box_pack_start(GTK_BOX(variable_dice), remove_button, FALSE, TRUE, 0);
@@ -596,7 +596,7 @@ minimize_window(GtkContainer *container, GtkWidget *widget, gpointer user_data) 
 static void
 set_window_icon(GtkWindow *window) {
 	GError *error = NULL;
-	GdkPixbuf *icon_buf = gdk_pixbuf_new_from_file(CONFIG_ICON_PATH, &error);
+	GdkPixbuf *icon_buf = gdk_pixbuf_new_from_file(RESDIR "Green-d10.svg", &error);
 	if (icon_buf) {
 		gtk_window_set_icon(window, icon_buf);
 		g_object_unref(icon_buf);
