@@ -117,6 +117,10 @@ main(int argc, char **argv) {
     g_signal_connect(variable_dices_box, "remove", G_CALLBACK(minimize_window), window);
 
     gtk_widget_show_all(GTK_WIDGET(window));
+#ifndef HAVE_GSTREAMER
+    GObject *sound_checkbox = gtk_builder_get_object(builder, "sound_checkbox");
+    gtk_widget_hide(GTK_WIDGET(sound_checkbox));
+#endif
 
     gtk_main();
 

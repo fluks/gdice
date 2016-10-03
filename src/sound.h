@@ -1,11 +1,18 @@
 #ifndef SOUND_H
     #define SOUND_H
 
-#include <gst/gst.h>
+#include "config.h"
+#ifdef HAVE_GSTREAMER
+    #include <gst/gst.h>
+#endif
 #include <glib.h>
 
 typedef struct {
+#ifdef HAVE_GSTREAMER
     GstElement *player;    
+#else
+    void *not_used;
+#endif
 } sound;
 
 /** Initialize playing audio.

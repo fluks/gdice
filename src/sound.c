@@ -1,12 +1,18 @@
 #include <stddef.h>
 #include <stdlib.h>
+#include "config.h"
 #include "sound.h"
 
+#ifdef HAVE_GSTREAMER
 static gboolean
 bus_cb(GstBus *bus, GstMessage *message, gpointer user_data);
+#endif
 
 sound*
 sound_init(int *argc, char ***argv, const gchar *file) {
+#ifndef HAVE_GSTREAMER
+    return NULL;
+#else
     gst_init(argc, argv);
 
     sound *s = g_new(sound, 1);
@@ -34,10 +40,12 @@ sound_init(int *argc, char ***argv, const gchar *file) {
         g_free(uri);
 
     return s;
+#endif
 }
 
 void
 sound_play(sound *s) {
+#ifdef HAVE_GSTREAMER
     if (s->player == NULL)
         return;
 
@@ -46,17 +54,21 @@ sound_play(sound *s) {
     if (gst_element_set_state(s->player, GST_STATE_PLAYING) ==
             GST_STATE_CHANGE_FAILURE)
         g_printerr("Failed to set playbin's state to playing.\n");
+#endif
 }
 
 void
 sound_end(sound *s) {
+#ifdef HAVE_GSTREAMER
     if (s->player != NULL) {
         gst_element_set_state(s->player, GST_STATE_NULL);
         gst_object_unref(s->player);
     }
     g_free(s);
+#endif
 }
 
+#ifdef HAVE_GSTREAMER
 static gboolean
 bus_cb(GstBus *bus, GstMessage *message, gpointer user_data) {
     GstElement *player = user_data;
@@ -86,3 +98,4 @@ bus_cb(GstBus *bus, GstMessage *message, gpointer user_data) {
 
     return TRUE;
 }
+#endif
