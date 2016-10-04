@@ -659,5 +659,5 @@ set_widgets_same_size(GtkBuilder *builder, const gchar *src, const gchar *dst) {
         return;
     GtkAllocation alloc;
     gtk_widget_get_allocation(GTK_WIDGET(s), &alloc);
-    gtk_widget_set_size_request(d, alloc.width, alloc.height);
+    gtk_widget_set_size_request(GTK_WIDGET(d), alloc.width, alloc.height);
 }
