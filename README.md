@@ -3,21 +3,20 @@ Description
 
 A GTK+ 3 dice with various different dices.
 
-Requirements
+Dependencies
 ============
 
-Building the program requires GTK+ 3 and gstreamer-1.0 libraries.
+Building the program requires GTK+3. gstreamer-1.0 is optional.
 
 Install
 =======
 
 ```
-make [PREFIX=ABSOLUTE_PATH]
+./autogen.sh
+./configure
+make
 make install
 ```
-
-Notice, that you can't run the program after make, because the resources
-are not yet copied to the paths in generated config.h.
 
 Uninstall
 =========
@@ -25,9 +24,6 @@ Uninstall
 ```
 make uninstall
 ```
-
-Running make creates src/prefix file, containing $PREFIX, uninstall goal needs
-that.
 
 Screenshot
 ==========
