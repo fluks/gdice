@@ -81,6 +81,9 @@ insert_string_to_buffer(GString *s, GtkBuilder *builder);
 static void
 set_window_icon(GtkWindow *window);
 
+static void
+set_widgets_same_size(GtkBuilder *builder, const gchar *src, const gchar *dst);
+
 int
 main(int argc, char **argv) {
     // For de_parse().
@@ -117,6 +120,8 @@ main(int argc, char **argv) {
     g_signal_connect(variable_dices_box, "remove", G_CALLBACK(minimize_window), window);
 
     gtk_widget_show_all(GTK_WIDGET(window));
+
+    set_widgets_same_size(builder, "dice_expression_label", "dN");
 #ifndef HAVE_GSTREAMER
     GObject *sound_checkbox = gtk_builder_get_object(builder, "sound_checkbox");
     gtk_widget_hide(GTK_WIDGET(sound_checkbox));
@@ -609,4 +614,23 @@ set_window_icon(GtkWindow *window) {
 		g_printerr("Can't load icon: %s\n", error->message);
 		g_error_free(error);
 	}
+}
+
+/** Resize dst widget as same size as src. This function needs to be called
+ * after gtk_widget_show_all(), otherwise dst won't be resized.
+ * @param builder
+ * @param src Source widget. dst will be resized to this size.
+ * @param dst Destination widget which will be resized.
+ */
+static void
+set_widgets_same_size(GtkBuilder *builder, const gchar *src, const gchar *dst) {
+    GObject *s = gtk_builder_get_object(builder, src);
+    if (!s)
+        return;
+    GObject *d = gtk_builder_get_object(builder, dst);
+    if (!d)
+        return;
+    GtkAllocation alloc;
+    gtk_widget_get_allocation(GTK_WIDGET(s), &alloc);
+    gtk_widget_set_size_request(d, alloc.width, alloc.height);
 }
