@@ -82,6 +82,9 @@ static void
 set_window_icon(GtkWindow *window);
 
 static void
+load_css();
+
+static void
 set_widgets_same_size(GtkBuilder *builder, const gchar *src, const gchar *dst);
 
 int
@@ -118,6 +121,8 @@ main(int argc, char **argv) {
 
     GObject *variable_dices_box = gtk_builder_get_object(builder, "variable_dices_box");
     g_signal_connect(variable_dices_box, "remove", G_CALLBACK(minimize_window), window);
+
+    load_css();
 
     gtk_widget_show_all(GTK_WIDGET(window));
 
@@ -513,14 +518,17 @@ validate_dice_expr(GtkWidget *entry, GdkEvent *event, gpointer user_data) {
  * @param valid_dice_expression
  */
 static void
-set_ui_based_on_dice_expression_validity(GtkWidget *roll_button, GtkWidget *dice_expr,
-    gboolean valid_dice_expression) {
-    gtk_widget_set_sensitive(GTK_WIDGET(roll_button), valid_dice_expression);
-    if (valid_dice_expression)
-        gtk_widget_override_background_color(dice_expr, GTK_STATE_FLAG_NORMAL, NULL);
+set_ui_based_on_dice_expression_validity(GtkWidget *roll_button,
+        GtkWidget *dice_expr, gboolean valid_dice_expression) {
+    gtk_widget_set_sensitive(roll_button, valid_dice_expression);
+    GtkStyleContext *ctx = gtk_widget_get_style_context(dice_expr);
+    if (valid_dice_expression) {
+        gtk_style_context_remove_class(ctx, "invalid");
+        gtk_style_context_add_class(ctx, "valid");
+    }
     else {
-        const GdkRGBA light_red = { 1.0, 0.0, 0.0, 0.5 };
-        gtk_widget_override_background_color(dice_expr, GTK_STATE_FLAG_NORMAL, &light_red);
+        gtk_style_context_remove_class(ctx, "valid");
+        gtk_style_context_add_class(ctx, "invalid");
     }
 }
 
@@ -614,6 +622,25 @@ set_window_icon(GtkWindow *window) {
 		g_printerr("Can't load icon: %s\n", error->message);
 		g_error_free(error);
 	}
+}
+
+/** Load css.
+ */
+static void
+load_css() {
+    GtkCssProvider *provider = gtk_css_provider_new();
+    GError *error = NULL;
+    gtk_css_provider_load_from_path(provider, RESDIR "gdice.css", &error);
+    if (!error) {
+        GdkScreen *screen = gdk_screen_get_default();
+        gtk_style_context_add_provider_for_screen(screen, GTK_STYLE_PROVIDER(provider),
+            GTK_STYLE_PROVIDER_PRIORITY_USER);
+        g_object_unref(provider);
+    }
+    else {
+        g_printerr("%s\n", error->message);
+        g_error_free(error);
+    }
 }
 
 /** Resize dst widget as same size as src. This function needs to be called

@@ -1,0 +1,11 @@
+#textview {
+  padding: 5px;
+}
+
+#dice_expression.valid {
+  background-color: white;
+}
+
+#dice_expression.invalid {
+  background-color: rgba(255, 0, 0, 0.5);
+}

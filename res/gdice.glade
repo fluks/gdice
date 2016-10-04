@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
+  <requires lib="gtk+" version="3.0"/>
   <object class="GtkAdjustment" id="adjustment1">
     <property name="lower">-100</property>
     <property name="upper">100</property>
@@ -87,8 +88,6 @@
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">1</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -102,8 +101,6 @@
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">2</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -117,8 +114,6 @@
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">3</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -132,8 +127,6 @@
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">4</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -147,8 +140,6 @@
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">5</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -162,8 +153,6 @@
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">7</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -177,8 +166,6 @@
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">6</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -192,8 +179,6 @@
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">8</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -207,12 +192,11 @@
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">9</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
               <object class="GtkEntry" id="dice_expression">
+                <property name="name">dice_expression</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="has_tooltip">True</property>
@@ -221,13 +205,10 @@
                 <property name="tooltip_text" translatable="yes">Example dice expression:
 3d6&lt;&gt;1 - 3d10&lt;2 +2</property>
                 <property name="invisible_char">●</property>
-                <property name="invisible_char_set">True</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">1</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -235,15 +216,12 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="invisible_char">●</property>
-                <property name="invisible_char_set">True</property>
                 <property name="adjustment">adjustment8</property>
                 <property name="numeric">True</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">9</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -257,8 +235,6 @@
               <packing>
                 <property name="left_attach">2</property>
                 <property name="top_attach">9</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -283,8 +259,8 @@
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
                             <property name="use_stock">True</property>
-                            <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                             <signal name="activate" handler="gtk_main_quit" swapped="no"/>
+                            <accelerator key="q" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                           </object>
                         </child>
                       </object>
@@ -330,7 +306,6 @@
                 <property name="left_attach">0</property>
                 <property name="top_attach">0</property>
                 <property name="width">4</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -344,8 +319,6 @@
               <packing>
                 <property name="left_attach">3</property>
                 <property name="top_attach">9</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
               </packing>
             </child>
             <child>
@@ -356,11 +329,15 @@
                 <property name="shadow_type">in</property>
                 <child>
                   <object class="GtkTextView" id="textview">
+                    <property name="name">textview</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="editable">False</property>
                     <property name="wrap_mode">char</property>
                     <property name="cursor_visible">False</property>
+                    <style>
+                      <class name="valid"/>
+                    </style>
                   </object>
                 </child>
               </object>
@@ -382,7 +359,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
-                    <property name="invisible_char_set">True</property>
                     <property name="input_purpose">digits</property>
                     <property name="adjustment">adjustment1</property>
                     <property name="numeric">True</property>
@@ -398,7 +374,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
-                    <property name="invisible_char_set">True</property>
                     <property name="adjustment">adjustment2</property>
                     <property name="numeric">True</property>
                   </object>
@@ -413,7 +388,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
-                    <property name="invisible_char_set">True</property>
                     <property name="adjustment">adjustment3</property>
                     <property name="numeric">True</property>
                   </object>
@@ -428,7 +402,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
-                    <property name="invisible_char_set">True</property>
                     <property name="adjustment">adjustment4</property>
                     <property name="climb_rate">1</property>
                     <property name="numeric">True</property>
@@ -444,7 +417,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
-                    <property name="invisible_char_set">True</property>
                     <property name="adjustment">adjustment5</property>
                     <property name="numeric">True</property>
                   </object>
@@ -459,7 +431,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
-                    <property name="invisible_char_set">True</property>
                     <property name="adjustment">adjustment6</property>
                     <property name="numeric">True</property>
                   </object>
@@ -474,7 +445,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
-                    <property name="invisible_char_set">True</property>
                     <property name="adjustment">adjustment7</property>
                     <property name="numeric">True</property>
                   </object>
@@ -488,7 +458,6 @@
               <packing>
                 <property name="left_attach">1</property>
                 <property name="top_attach">2</property>
-                <property name="width">1</property>
                 <property name="height">7</property>
               </packing>
             </child>
@@ -530,7 +499,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
-                    <property name="invisible_char_set">True</property>
                     <property name="adjustment">adjustment9</property>
                     <property name="numeric">True</property>
                   </object>
@@ -559,7 +527,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
-                    <property name="invisible_char_set">True</property>
                     <property name="adjustment">adjustment10</property>
                     <property name="numeric">True</property>
                   </object>
@@ -601,6 +568,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
+            <property name="padding">5</property>
             <property name="position">1</property>
           </packing>
         </child>
