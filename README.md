@@ -6,7 +6,7 @@ A GTK+ 3 dice with various different dices.
 Dependencies
 ============
 
-Building the program requires GTK+3. gstreamer-1.0 is optional.
+Building the program requires GTK+3, flex and bison. gstreamer-1.0 is optional.
 
 Install
 =======
