@@ -87,6 +87,12 @@ load_css();
 static void
 set_widgets_same_size(GtkBuilder *builder, const gchar *src, const gchar *dst);
 
+static void
+add_dice_expr_completion(GtkEntry *entry);
+
+static void
+append_dice_expr_completion(GtkEntry *entry);
+
 int
 main(int argc, char **argv) {
     // For de_parse().
@@ -102,6 +108,8 @@ main(int argc, char **argv) {
 
     GObject *dice_expr = gtk_builder_get_object(builder, "dice_expression");
     g_signal_connect(dice_expr, "key-release-event", G_CALLBACK(validate_dice_expr), builder);
+
+    add_dice_expr_completion(GTK_ENTRY(dice_expr));
 
     GObject *roll_button = gtk_builder_get_object(builder, "roll_button");
     roll_param rp = { builder, s };
@@ -168,6 +176,9 @@ roll(GtkWidget *button, gpointer user_data) {
     /* No input. */
     if (result_string->len == 0)
         goto clean_up;
+
+    append_dice_expr_completion(
+        GTK_ENTRY(gtk_builder_get_object(rp->builder, "dice_expression")));
 
     if (sounds_enabled(rp->builder))
         sound_play(rp->s);
@@ -660,4 +671,51 @@ set_widgets_same_size(GtkBuilder *builder, const gchar *src, const gchar *dst) {
     GtkAllocation alloc;
     gtk_widget_get_allocation(GTK_WIDGET(s), &alloc);
     gtk_widget_set_size_request(GTK_WIDGET(d), alloc.width, alloc.height);
+}
+
+/** Add completion for dice expression entry.
+ * @param entry
+ */
+static void
+add_dice_expr_completion(GtkEntry *entry) {
+    GtkEntryCompletion *completion = gtk_entry_completion_new();
+    gtk_entry_completion_set_model(completion,
+        GTK_TREE_MODEL(gtk_list_store_new(1, G_TYPE_STRING)));
+    gtk_entry_completion_set_popup_completion(completion, TRUE);
+    gtk_entry_completion_set_popup_single_match(completion, FALSE);
+    gtk_entry_completion_set_inline_completion(completion, TRUE);
+    gtk_entry_completion_set_text_column(completion, 0);
+    gtk_entry_completion_set_minimum_key_length(completion, 1);
+    gtk_entry_set_completion(entry, completion);
+    g_object_unref(completion);
+}
+
+/** Append the dice expression string to the completion list, if it's not
+ * in it already.
+ * @param entry
+ */
+static void
+append_dice_expr_completion(GtkEntry *entry) {
+    GtkEntryCompletion *completion = gtk_entry_get_completion(entry);
+    GtkTreeModel *model = gtk_entry_completion_get_model(completion);
+    const gchar *dice_expr = gtk_entry_get_text(entry);
+
+    gboolean dice_expr_in_list = FALSE;
+    GtkTreeIter iter;
+    for (gboolean has_next = gtk_tree_model_get_iter_first(model, &iter);
+            has_next;
+            has_next = gtk_tree_model_iter_next(model, &iter)) {
+        GValue value = G_VALUE_INIT;
+        gtk_tree_model_get_value(model, &iter, 0, &value);
+        const gchar *list_text = g_value_get_string(&value);
+        dice_expr_in_list = g_str_equal(dice_expr, list_text);
+        g_value_unset(&value);
+        if (dice_expr_in_list)
+            break;
+    }
+    if (!dice_expr_in_list) {
+        GtkTreeIter i;
+        gtk_list_store_append(GTK_LIST_STORE(model), &i);
+        gtk_list_store_set(GTK_LIST_STORE(model), &i, 0, dice_expr, -1);
+    }
 }
