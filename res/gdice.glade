@@ -332,6 +332,7 @@
                     <property name="name">textview</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="border_width">5</property>
                     <property name="editable">False</property>
                     <property name="wrap_mode">char</property>
                     <property name="cursor_visible">False</property>
