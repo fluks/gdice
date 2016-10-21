@@ -481,10 +481,10 @@
                   <object class="GtkLabel" id="dN">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="xpad">7</property>
                     <property name="label" translatable="yes">d_N</property>
                     <property name="use_underline">True</property>
                     <property name="mnemonic_widget">variable_dice_sides1</property>
+                    <property name="width_chars">4</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
