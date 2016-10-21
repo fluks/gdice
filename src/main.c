@@ -251,6 +251,7 @@ add_dice(GtkWidget *button, gpointer user_data) {
     GtkWidget *sides = gtk_spin_button_new_with_range(0, 100000, 1);
     gtk_label_set_mnemonic_widget(GTK_LABEL(label), sides);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(sides), 0);
+    gtk_entry_set_activates_default(GTK_ENTRY(sides), TRUE);
     gtk_box_pack_start(GTK_BOX(variable_dice), sides, TRUE, TRUE, 0);
 
     label = gtk_label_new_with_mnemonic("_x");
@@ -259,6 +260,7 @@ add_dice(GtkWidget *button, gpointer user_data) {
     GtkWidget *number_rolls = gtk_spin_button_new_with_range(-100000, 100000, 1);
     gtk_label_set_mnemonic_widget(GTK_LABEL(label), number_rolls);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(number_rolls), 0);
+    gtk_entry_set_activates_default(GTK_ENTRY(number_rolls), TRUE);
     gtk_box_pack_start(GTK_BOX(variable_dice), number_rolls, TRUE, TRUE, 0);
 
     GtkWidget *remove_button = gtk_button_new();

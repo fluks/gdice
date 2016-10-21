@@ -206,6 +206,7 @@
                 <property name="tooltip_text" translatable="yes">Example dice expression:
 3d6&lt;&gt;1 - 3d10&lt;2 +2</property>
                 <property name="invisible_char">●</property>
+                <property name="activates_default">True</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -217,6 +218,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="invisible_char">●</property>
+                <property name="activates_default">True</property>
                 <property name="adjustment">adjustment8</property>
                 <property name="numeric">True</property>
               </object>
@@ -313,8 +315,8 @@
               <object class="GtkButton" id="reset_button">
                 <property name="label" translatable="yes">Re_set</property>
                 <property name="visible">True</property>
-                <property name="receives_default">True</property>
                 <property name="can_focus">False</property>
+                <property name="receives_default">False</property>
                 <property name="use_underline">True</property>
               </object>
               <packing>
@@ -358,6 +360,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
+                    <property name="activates_default">True</property>
                     <property name="input_purpose">digits</property>
                     <property name="adjustment">adjustment1</property>
                     <property name="numeric">True</property>
@@ -373,6 +376,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
+                    <property name="activates_default">True</property>
                     <property name="adjustment">adjustment2</property>
                     <property name="numeric">True</property>
                   </object>
@@ -387,6 +391,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
+                    <property name="activates_default">True</property>
                     <property name="adjustment">adjustment3</property>
                     <property name="numeric">True</property>
                   </object>
@@ -401,6 +406,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
+                    <property name="activates_default">True</property>
                     <property name="adjustment">adjustment4</property>
                     <property name="climb_rate">1</property>
                     <property name="numeric">True</property>
@@ -416,6 +422,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
+                    <property name="activates_default">True</property>
                     <property name="adjustment">adjustment5</property>
                     <property name="numeric">True</property>
                   </object>
@@ -430,6 +437,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
+                    <property name="activates_default">True</property>
                     <property name="adjustment">adjustment6</property>
                     <property name="numeric">True</property>
                   </object>
@@ -444,6 +452,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
+                    <property name="activates_default">True</property>
                     <property name="adjustment">adjustment7</property>
                     <property name="numeric">True</property>
                   </object>
@@ -498,6 +507,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
+                    <property name="activates_default">True</property>
                     <property name="adjustment">adjustment9</property>
                     <property name="numeric">True</property>
                   </object>
@@ -526,6 +536,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">●</property>
+                    <property name="activates_default">True</property>
                     <property name="adjustment">adjustment10</property>
                     <property name="numeric">True</property>
                   </object>
@@ -538,8 +549,8 @@
                 <child>
                   <object class="GtkButton" id="add_button">
                     <property name="visible">True</property>
-                    <property name="receives_default">True</property>
                     <property name="can_focus">False</property>
+                    <property name="receives_default">False</property>
                     <property name="image_position">top</property>
                     <property name="always_show_image">True</property>
                     <child>
