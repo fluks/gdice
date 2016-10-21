@@ -265,6 +265,7 @@ add_dice(GtkWidget *button, gpointer user_data) {
     GtkWidget *remove_image = gtk_image_new_from_file(RESDIR "remove_12x12.svg");
     gtk_button_set_image(GTK_BUTTON(remove_button), remove_image);
     g_signal_connect(remove_button, "clicked", G_CALLBACK(remove_dice), variable_dice);
+    gtk_widget_set_can_focus(remove_button, FALSE);
     gtk_box_pack_start(GTK_BOX(variable_dice), remove_button, FALSE, TRUE, 0);
 
     GObject *box = gtk_builder_get_object(builder, "variable_dices_box");
