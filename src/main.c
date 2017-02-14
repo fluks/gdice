@@ -548,7 +548,8 @@ set_ui_based_on_dice_expression_validity(GtkWidget *roll_button,
 
 /** Reset.
  * Set every spinbutton's and modifier's value to zero, set dice expression to
- * empty string, remove results from textview and enable roll button.
+ * empty string and clear its completed dice expressions, remove results
+ * from textview and enable roll button.
  * @param button
  * @param user_data GtkBuilder.
  */
@@ -558,6 +559,9 @@ reset(GtkWidget *button, gpointer user_data) {
 
     GObject *expr = gtk_builder_get_object(builder, "dice_expression");
     gtk_entry_set_text(GTK_ENTRY(expr), "");
+    GtkEntryCompletion *completion = gtk_entry_get_completion(GTK_ENTRY(expr));
+    GtkTreeModel *model = gtk_entry_completion_get_model(completion);
+    gtk_list_store_clear(GTK_LIST_STORE(model));
 
     GObject *roll_button = gtk_builder_get_object(builder, "roll_button");
     set_ui_based_on_dice_expression_validity(GTK_WIDGET(roll_button), GTK_WIDGET(expr), TRUE);
