@@ -22,3 +22,4 @@ config.h
 autom4te.cache
 res/#gdice.glade#
 res/gdice.glade~
+res/*.valid

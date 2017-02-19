@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include <glib.h>
+#include <gio/gio.h>
 #include <inttypes.h>
 #include <string.h>
 #include <stdio.h>
@@ -93,6 +94,9 @@ add_dice_expr_completion(GtkEntry *entry);
 static void
 append_dice_expr_completion(GtkEntry *entry);
 
+static void
+load_preferences(GtkBuilder *builder);
+
 int
 main(int argc, char **argv) {
     // For de_parse().
@@ -131,6 +135,8 @@ main(int argc, char **argv) {
     g_signal_connect(variable_dices_box, "remove", G_CALLBACK(minimize_window), window);
 
     load_css();
+
+    load_preferences(builder);
 
     gtk_widget_show_all(GTK_WIDGET(window));
 
@@ -725,4 +731,15 @@ append_dice_expr_completion(GtkEntry *entry) {
         gtk_list_store_append(GTK_LIST_STORE(model), &i);
         gtk_list_store_set(GTK_LIST_STORE(model), &i, 0, dice_expr, -1);
     }
+}
+
+/** Load preferences and bind them to the GUI.
+ */
+static void
+load_preferences(GtkBuilder *builder) {
+    GSettings *settings = g_settings_new("com.github.fluks.GDice");
+    GObject *object = gtk_builder_get_object(builder, "sound_checkbox");
+    g_settings_bind(settings, "sound", object, "active", G_SETTINGS_BIND_DEFAULT);
+    object = gtk_builder_get_object(builder, "verbose");
+    g_settings_bind(settings, "verbose", object, "active", G_SETTINGS_BIND_DEFAULT);
 }

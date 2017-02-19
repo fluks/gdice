@@ -6,3 +6,8 @@ dist_res_DATA = \
 	gdice.glade \
 	remove_12x12.svg \
 	gdice.css
+
+gsettings_SCHEMAS = com.github.fluks.GDice.gschema.xml
+EXTRA_DIST = $(gsettings_SCHEMAS)
+
+@GSETTINGS_RULES@

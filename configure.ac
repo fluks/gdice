@@ -15,6 +15,8 @@ AC_PROG_YACC
 
 # Checks for libraries.
 
+GLIB_GSETTINGS
+
 # Checks for header files.
 AC_FUNC_ALLOCA
 AC_CHECK_HEADERS([inttypes.h libintl.h limits.h malloc.h stddef.h stdint.h stdlib.h string.h unistd.h])
