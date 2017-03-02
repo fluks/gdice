@@ -276,8 +276,10 @@ roll(int_least64_t nrolls,
     int_least64_t nth_included_roll = 0;
     for (int_least64_t i = small; i < nrolls - large; i++, nth_included_roll++) {
         NF_PLUS(sum, rolls[i], INT_LEAST64, interror);
-        if (interror != 0)
-            return DE_OVERFLOW;
+        if (interror != 0) {
+            retval = DE_OVERFLOW;
+            goto free;
+        }
         sum += rolls[i];
 
         const char *format_with_plus_or_not =
