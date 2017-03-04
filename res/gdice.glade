@@ -257,7 +257,7 @@
                         <property name="can_focus">False</property>
                         <child>
                           <object class="GtkImageMenuItem" id="quit_menuitem">
-                            <property name="label">gtk-quit</property>
+                            <property name="label" translatable="yes">gtk-quit</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>

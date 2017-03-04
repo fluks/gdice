@@ -36,7 +36,8 @@ AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset])
 AC_CONFIG_FILES([Makefile
                  src/Makefile
-                 res/Makefile])
+                 res/Makefile
+                 po/Makefile.in])
 
 AC_ARG_ENABLE([gstreamer],
     [AS_HELP_STRING([--disable-gstreamer], [disable gstreamer])], ,
@@ -49,5 +50,17 @@ PKG_CHECK_MODULES([GLIB], [glib-2.0])
 LIBS="$GTK_LIBS $GLIB_LIBS $GSTREAMER_LIBS"
 AC_SUBST([AM_CPPFLAGS],
     ['$(GTK_CFLAGS) $(GLIB_CFLAGS) $(GSTREAMER_CFLAGS)'])
+
+GETTEXT_PACKAGE=gdice
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED([GETTEXT_PACKAGE], ["$GETTEXT_PACKAGE"],
+                   [The domain to use with gettext])
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.17])
+# Internationalization.
+IT_PROG_INTLTOOL([0.35.0])
+
+PROGRAMNAME_LOCALEDIR=[${datadir}/locale]
+AC_SUBST(PROGRAMNAME_LOCALEDIR)
 
 AC_OUTPUT

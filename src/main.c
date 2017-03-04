@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include <glib.h>
+#include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <inttypes.h>
 #include <string.h>
@@ -99,6 +100,10 @@ load_preferences(GtkBuilder *builder);
 
 int
 main(int argc, char **argv) {
+    bindtextdomain(GETTEXT_PACKAGE, PROGRAMNAME_LOCALEDIR);
+    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+    textdomain(GETTEXT_PACKAGE);
+
     // For de_parse().
     srand(time(NULL));
 
@@ -421,7 +426,7 @@ roll_dices(GList *dices, int_least64_t *result, GString *result_string, GString 
     return TRUE;
 
     integer_overflow:
-        g_string_append(error, "integer overflow\n");
+        g_string_append(error, _("integer overflow\n"));
         return FALSE;
 }
 
@@ -440,7 +445,7 @@ add_modifier(gint modifier, int_least64_t *result, GString *result_string, GStri
     enum flow_type overflow;
     NF_PLUS(*result, modifier, INT_LEAST64, overflow);
     if (overflow != 0) {
-        g_string_append(error, "integer overflow\n");
+        g_string_append(error, _("integer overflow\n"));
         return FALSE;
     }
 
@@ -474,13 +479,13 @@ add_dice_expression(const gchar *expr, int_least64_t *result, GString *result_st
         /* Fallthrough! */
         case DE_INVALID_CHARACTER : case DE_SYNTAX_ERROR : case DE_NROLLS :
         case DE_IGNORE : case DE_DICE:
-            g_string_assign(error, "syntax error\n");
+            g_string_assign(error, _("syntax error\n"));
             return FALSE;
         case DE_MEMORY:
             g_printerr("Out of memory\n");
             abort();
         case DE_OVERFLOW:
-            g_string_assign(error, "integer overflow\n");
+            g_string_assign(error, _("integer overflow\n"));
             return FALSE;
         default:
             *result = res;

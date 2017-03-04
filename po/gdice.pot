@@ -1,0 +1,114 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-03-04 05:54+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../res/gdice.glade.h:1
+msgid "gdice"
+msgstr ""
+
+#: ../res/gdice.glade.h:2
+msgid "ex_pr"
+msgstr ""
+
+#: ../res/gdice.glade.h:3
+msgid "d_4"
+msgstr ""
+
+#: ../res/gdice.glade.h:4
+msgid "d_6"
+msgstr ""
+
+#: ../res/gdice.glade.h:5
+msgid "d_8"
+msgstr ""
+
+#: ../res/gdice.glade.h:6
+msgid "d_10"
+msgstr ""
+
+#: ../res/gdice.glade.h:7
+msgid "_d20"
+msgstr ""
+
+#: ../res/gdice.glade.h:8
+msgid "d1_2"
+msgstr ""
+
+#: ../res/gdice.glade.h:9
+msgid "d1_00"
+msgstr ""
+
+#: ../res/gdice.glade.h:10
+msgid "_mod"
+msgstr ""
+
+#: ../res/gdice.glade.h:11
+msgid ""
+"Example dice expression:\n"
+"3d6&lt;&gt;1 - 3d10&lt;2 +2"
+msgstr ""
+
+#: ../res/gdice.glade.h:13
+msgid ""
+"Example dice expression:\n"
+"3d6<>1 - 3d10<2 +2"
+msgstr ""
+
+#: ../res/gdice.glade.h:15
+msgid "_Roll"
+msgstr ""
+
+#: ../res/gdice.glade.h:16
+msgid "_File"
+msgstr ""
+
+#: ../res/gdice.glade.h:17
+msgid "gtk-quit"
+msgstr ""
+
+#: ../res/gdice.glade.h:18
+msgid "_Edit"
+msgstr ""
+
+#: ../res/gdice.glade.h:19
+msgid "_Sound"
+msgstr ""
+
+#: ../res/gdice.glade.h:20
+msgid "_Verbose"
+msgstr ""
+
+#: ../res/gdice.glade.h:21
+msgid "Re_set"
+msgstr ""
+
+#: ../res/gdice.glade.h:22
+msgid "d_N"
+msgstr ""
+
+#: ../res/gdice.glade.h:23
+msgid "_x"
+msgstr ""
+
+#: ../src/main.c:429 ../src/main.c:448 ../src/main.c:488
+msgid "integer overflow\n"
+msgstr ""
+
+#: ../src/main.c:482
+msgid "syntax error\n"
+msgstr ""
