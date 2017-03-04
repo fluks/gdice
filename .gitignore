@@ -25,6 +25,7 @@ res/gdice.glade~
 res/*.valid
 po/Makevars.template
 po/POTFILES
+!po/POTFILES.in
 po/Rules-quot
 po/boldquot.sed
 po/en@boldquot.header
