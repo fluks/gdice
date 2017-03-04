@@ -18,6 +18,7 @@ Makefile
 *.status
 *.log
 *.in*
+!res/gdice.desktop.in
 config.h
 autom4te.cache
 res/#gdice.glade#
@@ -39,3 +40,5 @@ ABOUT-NLS
 config.guess
 config.rpath
 config.sub
+m4
+res/gdice.desktop

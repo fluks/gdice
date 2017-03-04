@@ -8,14 +8,22 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdice\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-04 05:54+0200\n"
-"PO-Revision-Date: 2017-03-02 06:00+ZONE\n"
+"POT-Creation-Date: 2017-03-04 20:03+0200\n"
+"PO-Revision-Date: 2017-03-04 20:47+0200\n"
 "Last-Translator: fluks <fluks.github@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: ../res/gdice.desktop.in.h:1
+msgid "Dice Program"
+msgstr "Noppaohjelma"
+
+#: ../res/gdice.desktop.in.h:2
+msgid "Roll dices"
+msgstr "Heitä noppia"
 
 #: ../res/gdice.glade.h:1
 msgid "gdice"

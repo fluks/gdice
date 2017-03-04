@@ -642,7 +642,7 @@ minimize_window(GtkContainer *container, GtkWidget *widget, gpointer user_data) 
 static void
 set_window_icon(GtkWindow *window) {
     GError *error = NULL;
-    GdkPixbuf *icon_buf = gdk_pixbuf_new_from_file(RESDIR "Green-d10.svg", &error);
+    GdkPixbuf *icon_buf = gdk_pixbuf_new_from_file(RESDIR "gdice.svg", &error);
     if (icon_buf) {
         gtk_window_set_icon(window, icon_buf);
         g_object_unref(icon_buf);
