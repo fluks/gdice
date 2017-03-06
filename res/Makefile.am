@@ -5,7 +5,8 @@ dist_res_DATA = \
 	dices.ogg \
 	gdice.glade \
 	remove_12x12.svg \
-	gdice.css
+	gdice.css \
+	gdice.desktop.in
 
 desktopdir = $(datadir)/applications
 desktop_in_files = gdice.desktop.in
@@ -18,3 +19,6 @@ icon_DATA = gdice.svg
 gsettings_SCHEMAS = com.github.fluks.GDice.gschema.xml
 EXTRA_DIST = $(gsettings_SCHEMAS)
 @GSETTINGS_RULES@
+
+DISTCLEANFILES = \
+	$(desktop_DATA)
