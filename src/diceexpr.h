@@ -23,8 +23,14 @@ enum parse_error {
     DE_NROLLS,              // Number of rolls is not positive.
     DE_DICE,                // Number of sides for a dice is not positive.
     DE_IGNORE,              // Number of ignores for a dice is too large.
-    DE_OVERFLOW             // Integer overflow.
-};
+    DE_OVERFLOW,            // Integer overflow.
+    DE_ROLLS_TOO_LARGE      // Too many number of rolls, program may hang or
+};                          // memory can run out.
+
+/**
+ * The maximum number of rolls for a one dice.
+ */
+#define MAX_NUMBER_OF_DICE_ROLLS 10000
 
 /** Parse dice expression.
  * Caller must call srand() once before using this function. Memory for

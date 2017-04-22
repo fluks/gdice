@@ -136,7 +136,13 @@ expr:
     ;
 
 maybe_int:
-    INTEGER { $$ = $1; }
+    INTEGER {
+        if ($1 > MAX_NUMBER_OF_DICE_ROLLS) {
+            parse_error = DE_ROLLS_TOO_LARGE;
+            YYERROR;
+        }
+        $$ = $1;
+    }
     /* If there's no number before 'd', roll the dice one time. */
     |       { $$ = 1; }
     ;

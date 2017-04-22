@@ -478,7 +478,7 @@ add_dice_expression(const gchar *expr, int_least64_t *result, GString *result_st
     switch (e) {
         /* Fallthrough! */
         case DE_INVALID_CHARACTER : case DE_SYNTAX_ERROR : case DE_NROLLS :
-        case DE_IGNORE : case DE_DICE:
+        case DE_IGNORE : case DE_DICE: case DE_ROLLS_TOO_LARGE:
             g_string_assign(error, _("syntax error\n"));
             return FALSE;
         case DE_MEMORY:
@@ -522,7 +522,7 @@ validate_dice_expr(GtkWidget *entry, GdkEvent *event, gpointer user_data) {
          */
         /* Fallthrough! */
         case DE_INVALID_CHARACTER: case DE_SYNTAX_ERROR: case DE_NROLLS:
-        case DE_IGNORE: case DE_DICE:
+        case DE_IGNORE: case DE_DICE: case DE_ROLLS_TOO_LARGE:
             set_ui_based_on_dice_expression_validity(GTK_WIDGET(roll_button), entry, FALSE);
             break;
         /* TODO Maybe just free rolled_expr, but then what? */
