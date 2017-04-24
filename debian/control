@@ -1,0 +1,18 @@
+Source: gdice
+Maintainer: fluks <fluks.github@gmail.com>
+Section: x11
+Priority: extra
+Standards-Version: 3.9.3
+Build-Depends: debhelper (>= 9),
+               bison,
+               flex,
+               gettext (>= 0.17),
+               intltool (>= 0.35.0),
+               libgtk-3-dev,
+               libgstreamer1.0-dev
+
+Package: gdice
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: A GTK+3 dice
+ A GTK+3 dice with various different dices.
