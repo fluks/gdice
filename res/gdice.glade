@@ -635,7 +635,7 @@
     <property name="type_hint">dialog</property>
     <property name="transient_for">window</property>
     <property name="program_name">GDice</property>
-    <property name="version">0.1.5</property>
+    <property name="version">0.2.5</property>
     <property name="copyright" translatable="yes">Copyright © 2014-2017 fluks &lt;fluks.github@gmail.com&gt;</property>
     <property name="website">https://github.com/fluks/gdice</property>
     <property name="website_label" translatable="yes">https://github.com/fluks/gdice</property>

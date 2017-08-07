@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.69])
-AC_INIT([gdice], [0.1.5], [https://github.com/fluks/gdice/issues], [], \
+AC_INIT([gdice], [0.2.5], [https://github.com/fluks/gdice/issues], [], \
     [https://github.com/fluks/gdice])
 AM_INIT_AUTOMAKE([foreign -Wall -Werror])
 AC_CONFIG_SRCDIR([src/main.c])
