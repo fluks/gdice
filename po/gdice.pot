@@ -8,13 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-04 20:03+0200\n"
+"POT-Creation-Date: 2017-08-07 19:38+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../res/gdice.desktop.in.h:1
@@ -86,19 +86,19 @@ msgid "_File"
 msgstr ""
 
 #: ../res/gdice.glade.h:17
-msgid "gtk-quit"
-msgstr ""
-
-#: ../res/gdice.glade.h:18
 msgid "_Edit"
 msgstr ""
 
-#: ../res/gdice.glade.h:19
+#: ../res/gdice.glade.h:18
 msgid "_Sound"
 msgstr ""
 
-#: ../res/gdice.glade.h:20
+#: ../res/gdice.glade.h:19
 msgid "_Verbose"
+msgstr ""
+
+#: ../res/gdice.glade.h:20
+msgid "_Help"
 msgstr ""
 
 #: ../res/gdice.glade.h:21
@@ -113,10 +113,58 @@ msgstr ""
 msgid "_x"
 msgstr ""
 
-#: ../src/main.c:429 ../src/main.c:448 ../src/main.c:488
+#: ../res/gdice.glade.h:24
+msgid "Copyright © 2014-2017 fluks <fluks.github@gmail.com>"
+msgstr ""
+
+#: ../res/gdice.glade.h:25
+msgid "https://github.com/fluks/gdice"
+msgstr ""
+
+#: ../res/gdice.glade.h:26
+msgid "Help"
+msgstr ""
+
+#: ../res/gdice.glade.h:27
+msgid "_Close"
+msgstr ""
+
+#: ../res/gdice.glade.h:28
+msgid ""
+"<span size=\"large\" weight=\"bold\">Dice Expression Syntax</span>\n"
+"\n"
+"<span>A dice expression consists of dice rolls, possibly ignoring some "
+"number\n"
+"of smallest and largest of those rolls and constant modifiers.</span>\n"
+"\n"
+"<span size=\"large\" weight=\"bold\">Dice Expression Grammar</span>\n"
+"\n"
+"<span>s ::= expr\n"
+"expr ::= INTEGER | ('-'|'+') expr | expr '-' expr | expr '+' expr |\n"
+"              [INTEGER] ('d'|'D') INTEGER ignore\n"
+"ignore<sup>0</sup> ::= ('&lt;' | '&gt;' [INTEGER])*</span>\n"
+"\n"
+"<span size=\"small\">[0] The number of ignores have to be less than number "
+"of rolls.</span>\n"
+"\n"
+"<span size=\"large\" weight=\"bold\">Examples</span>\n"
+"\n"
+"<i>  3d6&lt; - d4 + 2</i>\n"
+"\n"
+"<span>Roll d6 three times and ignore the smallest roll, substract d4 and add "
+"2.</span>\n"
+"\n"
+"\n"
+"<i>  5d12&lt;2&gt;1 + 1d3</i>\n"
+"\n"
+"<span>Roll d12 five times and ignore two smallest rolls and the largest "
+"roll, add d3.</span>"
+msgstr ""
+
+#: ../src/main.c:453 ../src/main.c:472 ../src/main.c:512
 msgid "integer overflow\n"
 msgstr ""
 
-#: ../src/main.c:482
+#: ../src/main.c:506
 msgid "syntax error\n"
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdice\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-04 20:03+0200\n"
+"POT-Creation-Date: 2017-08-07 19:38+0300\n"
 "PO-Revision-Date: 2017-03-04 20:47+0200\n"
 "Last-Translator: fluks <fluks.github@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -90,20 +90,20 @@ msgid "_File"
 msgstr "_Tiedosto"
 
 #: ../res/gdice.glade.h:17
-msgid "gtk-quit"
-msgstr "_Lopeta"
-
-#: ../res/gdice.glade.h:18
 msgid "_Edit"
 msgstr "_Muokkaa"
 
-#: ../res/gdice.glade.h:19
+#: ../res/gdice.glade.h:18
 msgid "_Sound"
 msgstr "_Äänet"
 
-#: ../res/gdice.glade.h:20
+#: ../res/gdice.glade.h:19
 msgid "_Verbose"
 msgstr "_Yksityiskohtainen"
+
+#: ../res/gdice.glade.h:20
+msgid "_Help"
+msgstr "_Ohje"
 
 #: ../res/gdice.glade.h:21
 msgid "Re_set"
@@ -117,10 +117,86 @@ msgstr ""
 msgid "_x"
 msgstr ""
 
-#: ../src/main.c:429 ../src/main.c:448 ../src/main.c:488
+#: ../res/gdice.glade.h:24
+msgid "Copyright © 2014-2017 fluks <fluks.github@gmail.com>"
+msgstr ""
+
+#: ../res/gdice.glade.h:25
+msgid "https://github.com/fluks/gdice"
+msgstr ""
+
+#: ../res/gdice.glade.h:26
+msgid "Help"
+msgstr "Ohje"
+
+#: ../res/gdice.glade.h:27
+msgid "_Close"
+msgstr "_Sulje"
+
+#: ../res/gdice.glade.h:28
+msgid ""
+"<span size=\"large\" weight=\"bold\">Dice Expression Syntax</span>\n"
+"\n"
+"<span>A dice expression consists of dice rolls, possibly ignoring some "
+"number\n"
+"of smallest and largest of those rolls and constant modifiers.</span>\n"
+"\n"
+"<span size=\"large\" weight=\"bold\">Dice Expression Grammar</span>\n"
+"\n"
+"<span>s ::= expr\n"
+"expr ::= INTEGER | ('-'|'+') expr | expr '-' expr | expr '+' expr |\n"
+"              [INTEGER] ('d'|'D') INTEGER ignore\n"
+"ignore<sup>0</sup> ::= ('&lt;' | '&gt;' [INTEGER])*</span>\n"
+"\n"
+"<span size=\"small\">[0] The number of ignores have to be less than number "
+"of rolls.</span>\n"
+"\n"
+"<span size=\"large\" weight=\"bold\">Examples</span>\n"
+"\n"
+"<i>  3d6&lt; - d4 + 2</i>\n"
+"\n"
+"<span>Roll d6 three times and ignore the smallest roll, substract d4 and add "
+"2.</span>\n"
+"\n"
+"\n"
+"<i>  5d12&lt;2&gt;1 + 1d3</i>\n"
+"\n"
+"<span>Roll d12 five times and ignore two smallest rolls and the largest "
+"roll, add d3.</span>"
+msgstr ""
+"<span size=\"large\" weight=\"bold\">Noppalausekkeen syntaksi</span>\n"
+"\n"
+"<span>Noppalauseke koostuu noppien heitoista, mahdollisesti hyläten osa\n"
+"pienimmistä ja suurimmista heitoista, ja vakioista.</span>\n"
+"\n"
+"<span size=\"large\" weight=\"bold\">Noppalausekkeen kielioppi</span>\n"
+"\n"
+"<span>s ::= lauseke\n"
+"lauseke ::= KOKONAISLUKU | ('-'|'+') lauseke | lauseke '-' lauseke |\n"
+"            lauseke '+' lauseke |\n"
+"            [KOKONAISLUKU] ('d'|'D') KOKONAISLUKU hylkää\n"
+"hylkää<sup>0</sup> ::= ('&lt;' | '&gt;' [KOKONAISLUKU])*</span>\n"
+"\n"
+"<span size=\"small\">[0] Hylättyjen heittojen määrä pitää olla vähemmän kuin "
+"heittojen määrä.</span>\n"
+"\n"
+"<span size=\"large\" weight=\"bold\">Esimerkit</span>\n"
+"\n"
+"<i>  3d6&lt; - d4 + 2</i>\n"
+"\n"
+"<span>Heitä d6:sta kolme kertaa ja hylkää pienin, vähennä d4 ja lisää kaksi."
+"</span>\n"
+"\n"
+"\n"
+"<i>  5d12&lt;2&gt;1 + 1d3</i>\n"
+"\n"
+"<span>Heitä d12:sta viisi kertaa ja hylkää kaksi pienintä ja suurin heitto,\n"
+"lisää d3.</span>"
+
+#: ../src/main.c:453 ../src/main.c:472 ../src/main.c:512
 msgid "integer overflow\n"
 msgstr "kokonaisluvun ylivuoto\n"
 
-#: ../src/main.c:482
+#: ../src/main.c:506
 msgid "syntax error\n"
 msgstr "syntaksivirhe\n"

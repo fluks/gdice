@@ -98,6 +98,15 @@ append_dice_expr_completion(GtkEntry *entry);
 static void
 load_preferences(GtkBuilder *builder);
 
+static void
+show_about_window(GtkMenuItem *menuitem, gpointer user_data);
+
+static void
+show_help_window(GtkMenuItem *menuitem, gpointer user_data);
+
+static void
+connect_help_window_signals(GtkBuilder *builder);
+
 int
 main(int argc, char **argv) {
     bindtextdomain(GETTEXT_PACKAGE, PROGRAMNAME_LOCALEDIR);
@@ -138,6 +147,11 @@ main(int argc, char **argv) {
 
     GObject *variable_dices_box = gtk_builder_get_object(builder, "variable_dices_box");
     g_signal_connect(variable_dices_box, "remove", G_CALLBACK(minimize_window), window);
+
+    GObject *about_menuitem = gtk_builder_get_object(builder, "about_menuitem");
+    g_signal_connect(about_menuitem, "activate", G_CALLBACK(show_about_window), builder);
+
+    connect_help_window_signals(builder);
 
     load_css();
 
@@ -747,4 +761,43 @@ load_preferences(GtkBuilder *builder) {
     g_settings_bind(settings, "sound", object, "active", G_SETTINGS_BIND_DEFAULT);
     object = gtk_builder_get_object(builder, "verbose");
     g_settings_bind(settings, "verbose", object, "active", G_SETTINGS_BIND_DEFAULT);
+}
+
+/** Show the about window.
+ * @param menuitem Not used.
+ * @param user_data GtkBuilder.
+ */
+static void
+show_about_window(GtkMenuItem *menuitem, gpointer user_data) {
+    GtkBuilder *builder = user_data;
+    GObject *about_window = gtk_builder_get_object(builder, "about_window");
+    gint response_id = gtk_dialog_run(GTK_DIALOG(about_window));
+
+    if (response_id == GTK_RESPONSE_DELETE_EVENT)
+        gtk_widget_hide(GTK_WIDGET(about_window));
+}
+
+/**
+ * Show the help window.
+ * @param menuitem Not used.
+ * @param user_data GtkBuilder.
+ */
+static void
+show_help_window(GtkMenuItem *menuitem, gpointer user_data) {
+    GtkBuilder *builder = user_data;
+
+    GObject *help_window = gtk_builder_get_object(builder, "help_window");
+    GtkButton *close_button = GTK_BUTTON(gtk_builder_get_object(builder, "help_window_close_button"));
+    g_signal_connect_swapped(close_button, "clicked", G_CALLBACK(gtk_widget_hide), GTK_WIDGET(help_window));
+    gtk_window_present(GTK_WINDOW(help_window));
+}
+
+/**
+ * Connect signals related to the help window.
+ * @param builder GtkBuilder.
+ */
+static void
+connect_help_window_signals(GtkBuilder *builder) {
+    GtkWidget *about_menuitem = GTK_WIDGET(gtk_builder_get_object(builder, "help_menuitem"));
+    g_signal_connect(about_menuitem, "activate", G_CALLBACK(show_help_window), builder);
 }

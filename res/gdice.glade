@@ -257,7 +257,7 @@
                         <property name="can_focus">False</property>
                         <child>
                           <object class="GtkImageMenuItem" id="quit_menuitem">
-                            <property name="label" translatable="yes">gtk-quit</property>
+                            <property name="label">gtk-quit</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
@@ -298,6 +298,47 @@
                             <property name="use_underline">True</property>
                             <property name="active">True</property>
                             <accelerator key="v" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkMenuItem" id="menuitem3">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">_Help</property>
+                    <property name="use_underline">True</property>
+                    <child type="submenu">
+                      <object class="GtkMenu" id="menu3">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkImageMenuItem" id="help_menuitem">
+                            <property name="label">gtk-help</property>
+                            <property name="name">help_menuitem</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
+                            <accelerator key="h" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkSeparatorMenuItem">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImageMenuItem" id="about_menuitem">
+                            <property name="label">gtk-about</property>
+                            <property name="name">about_menuitem</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="use_underline">True</property>
+                            <property name="use_stock">True</property>
                           </object>
                         </child>
                       </object>
@@ -580,6 +621,116 @@
             <property name="fill">True</property>
             <property name="padding">5</property>
             <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkAboutDialog" id="about_window">
+    <property name="name">about_window</property>
+    <property name="can_focus">False</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="type_hint">dialog</property>
+    <property name="transient_for">window</property>
+    <property name="program_name">GDice</property>
+    <property name="version">0.1.5</property>
+    <property name="copyright" translatable="yes">Copyright © 2014-2017 fluks &lt;fluks.github@gmail.com&gt;</property>
+    <property name="website">https://github.com/fluks/gdice</property>
+    <property name="website_label" translatable="yes">https://github.com/fluks/gdice</property>
+    <property name="authors">fluks &lt;fluks.github@gmail.com&gt;</property>
+    <property name="artists">Jean Victor Balin &lt;jean.victor.balin@gmail.com&gt;
+jhnri4 https://openclipart.org/user-detail/jhnri4
+Krdan https://commons.wikimedia.org/wiki/User:Krdan</property>
+    <property name="logo">gdice.svg</property>
+    <property name="license_type">gpl-2-0</property>
+    <child internal-child="vbox">
+      <object class="GtkBox">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <placeholder/>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="help_window">
+    <property name="name">help_window</property>
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">Help</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="type_hint">dialog</property>
+    <property name="transient_for">window</property>
+    <signal name="delete-event" handler="gtk_widget_hide" swapped="no"/>
+    <child>
+      <object class="GtkGrid">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkButton" id="help_window_close_button">
+            <property name="label" translatable="yes">_Close</property>
+            <property name="name">help_window_close_button</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="margin_top">10</property>
+            <property name="use_underline">True</property>
+            <signal name="activate" handler="gtk_widget_hide" object="help_window" swapped="no"/>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="hexpand">True</property>
+            <property name="vexpand">True</property>
+            <property name="label" translatable="yes">&lt;span size="large" weight="bold"&gt;Dice Expression Syntax&lt;/span&gt;
+
+&lt;span&gt;A dice expression consists of dice rolls, possibly ignoring some number
+of smallest and largest of those rolls and constant modifiers.&lt;/span&gt;
+
+&lt;span size="large" weight="bold"&gt;Dice Expression Grammar&lt;/span&gt;
+
+&lt;span&gt;s ::= expr
+expr ::= INTEGER | ('-'|'+') expr | expr '-' expr | expr '+' expr |
+              [INTEGER] ('d'|'D') INTEGER ignore
+ignore&lt;sup&gt;0&lt;/sup&gt; ::= ('&amp;lt;' | '&amp;gt;' [INTEGER])*&lt;/span&gt;
+
+&lt;span size="small"&gt;[0] The number of ignores have to be less than number of rolls.&lt;/span&gt;
+
+&lt;span size="large" weight="bold"&gt;Examples&lt;/span&gt;
+
+&lt;i&gt;  3d6&amp;lt; - d4 + 2&lt;/i&gt;
+
+&lt;span&gt;Roll d6 three times and ignore the smallest roll, substract d4 and add 2.&lt;/span&gt;
+
+
+&lt;i&gt;  5d12&amp;lt;2&amp;gt;1 + 1d3&lt;/i&gt;
+
+&lt;span&gt;Roll d12 five times and ignore two smallest rolls and the largest roll, add d3.&lt;/span&gt;</property>
+            <property name="use_markup">True</property>
+          </object>
+          <packing>
+            <property name="left_attach">0</property>
+            <property name="top_attach">0</property>
           </packing>
         </child>
       </object>
