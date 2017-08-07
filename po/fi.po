@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gdice\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-07 19:38+0300\n"
+"POT-Creation-Date: 2017-08-07 20:17+0300\n"
 "PO-Revision-Date: 2017-03-04 20:47+0200\n"
 "Last-Translator: fluks <fluks.github@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -113,27 +113,35 @@ msgstr "T_yhjennä"
 msgid "d_N"
 msgstr ""
 
-#: ../res/gdice.glade.h:23
+#: ../res/gdice.glade.h:23 ../src/main.c:279
+msgid "Number of sides"
+msgstr "Sivujen lukumäärä"
+
+#: ../res/gdice.glade.h:24
 msgid "_x"
 msgstr ""
 
-#: ../res/gdice.glade.h:24
+#: ../res/gdice.glade.h:25 ../src/main.c:288
+msgid "Number of rolls"
+msgstr "Heittojen lukumäärä"
+
+#: ../res/gdice.glade.h:26
 msgid "Copyright © 2014-2017 fluks <fluks.github@gmail.com>"
 msgstr ""
 
-#: ../res/gdice.glade.h:25
+#: ../res/gdice.glade.h:27
 msgid "https://github.com/fluks/gdice"
 msgstr ""
 
-#: ../res/gdice.glade.h:26
+#: ../res/gdice.glade.h:28
 msgid "Help"
 msgstr "Ohje"
 
-#: ../res/gdice.glade.h:27
+#: ../res/gdice.glade.h:29
 msgid "_Close"
 msgstr "_Sulje"
 
-#: ../res/gdice.glade.h:28
+#: ../res/gdice.glade.h:30
 msgid ""
 "<span size=\"large\" weight=\"bold\">Dice Expression Syntax</span>\n"
 "\n"
@@ -193,10 +201,10 @@ msgstr ""
 "<span>Heitä d12:sta viisi kertaa ja hylkää kaksi pienintä ja suurin heitto,\n"
 "lisää d3.</span>"
 
-#: ../src/main.c:453 ../src/main.c:472 ../src/main.c:512
+#: ../src/main.c:445 ../src/main.c:464 ../src/main.c:504
 msgid "integer overflow\n"
 msgstr "kokonaisluvun ylivuoto\n"
 
-#: ../src/main.c:506
+#: ../src/main.c:498
 msgid "syntax error\n"
 msgstr "syntaksivirhe\n"

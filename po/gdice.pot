@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-08-07 19:38+0300\n"
+"POT-Creation-Date: 2017-08-07 20:17+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -109,27 +109,35 @@ msgstr ""
 msgid "d_N"
 msgstr ""
 
-#: ../res/gdice.glade.h:23
-msgid "_x"
+#: ../res/gdice.glade.h:23 ../src/main.c:279
+msgid "Number of sides"
 msgstr ""
 
 #: ../res/gdice.glade.h:24
-msgid "Copyright © 2014-2017 fluks <fluks.github@gmail.com>"
+msgid "_x"
 msgstr ""
 
-#: ../res/gdice.glade.h:25
-msgid "https://github.com/fluks/gdice"
+#: ../res/gdice.glade.h:25 ../src/main.c:288
+msgid "Number of rolls"
 msgstr ""
 
 #: ../res/gdice.glade.h:26
-msgid "Help"
+msgid "Copyright © 2014-2017 fluks <fluks.github@gmail.com>"
 msgstr ""
 
 #: ../res/gdice.glade.h:27
-msgid "_Close"
+msgid "https://github.com/fluks/gdice"
 msgstr ""
 
 #: ../res/gdice.glade.h:28
+msgid "Help"
+msgstr ""
+
+#: ../res/gdice.glade.h:29
+msgid "_Close"
+msgstr ""
+
+#: ../res/gdice.glade.h:30
 msgid ""
 "<span size=\"large\" weight=\"bold\">Dice Expression Syntax</span>\n"
 "\n"
@@ -161,10 +169,10 @@ msgid ""
 "roll, add d3.</span>"
 msgstr ""
 
-#: ../src/main.c:453 ../src/main.c:472 ../src/main.c:512
+#: ../src/main.c:445 ../src/main.c:464 ../src/main.c:504
 msgid "integer overflow\n"
 msgstr ""
 
-#: ../src/main.c:506
+#: ../src/main.c:498
 msgid "syntax error\n"
 msgstr ""

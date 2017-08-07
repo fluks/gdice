@@ -276,6 +276,7 @@ add_dice(GtkWidget *button, gpointer user_data) {
     GtkWidget *sides = gtk_spin_button_new_with_range(0, 100000, 1);
     gtk_label_set_mnemonic_widget(GTK_LABEL(label), sides);
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(sides), 0);
+    gtk_widget_set_tooltip_text(sides, _("Number of sides"));
     gtk_entry_set_activates_default(GTK_ENTRY(sides), TRUE);
     gtk_box_pack_start(GTK_BOX(variable_dice), sides, TRUE, TRUE, 0);
 
@@ -284,6 +285,7 @@ add_dice(GtkWidget *button, gpointer user_data) {
 
     GtkWidget *number_rolls = gtk_spin_button_new_with_range(-100000, 100000, 1);
     gtk_label_set_mnemonic_widget(GTK_LABEL(label), number_rolls);
+    gtk_widget_set_tooltip_text(number_rolls, _("Number of rolls"));
     gtk_spin_button_set_value(GTK_SPIN_BUTTON(number_rolls), 0);
     gtk_entry_set_activates_default(GTK_ENTRY(number_rolls), TRUE);
     gtk_box_pack_start(GTK_BOX(variable_dice), number_rolls, TRUE, TRUE, 0);

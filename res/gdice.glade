@@ -547,6 +547,7 @@
                   <object class="GtkSpinButton" id="variable_dice_sides1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Number of sides</property>
                     <property name="invisible_char">●</property>
                     <property name="activates_default">True</property>
                     <property name="adjustment">adjustment9</property>
@@ -576,6 +577,7 @@
                   <object class="GtkSpinButton" id="variable_dice_rolls1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="tooltip_text" translatable="yes">Number of rolls</property>
                     <property name="invisible_char">●</property>
                     <property name="activates_default">True</property>
                     <property name="adjustment">adjustment10</property>
