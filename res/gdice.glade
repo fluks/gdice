@@ -686,6 +686,7 @@ Krdan https://commons.wikimedia.org/wiki/User:Krdan</property>
             <property name="name">help_window_close_button</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="has_focus">True</property>
             <property name="receives_default">True</property>
             <property name="halign">center</property>
             <property name="valign">center</property>
@@ -729,6 +730,7 @@ ignore&lt;sup&gt;0&lt;/sup&gt; ::= ('&amp;lt;' | '&amp;gt;' [INTEGER])*&lt;/span
 
 &lt;span&gt;Roll d12 five times and ignore two smallest rolls and the largest roll, add d3.&lt;/span&gt;</property>
             <property name="use_markup">True</property>
+            <property name="selectable">True</property>
           </object>
           <packing>
             <property name="left_attach">0</property>
